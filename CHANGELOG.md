@@ -7,6 +7,7 @@
 - CodeMirror editor with syntax highlighting, completion, search, folding and document outline.
 - Source-linked reading notes and manuscript navigation in a shared reading/writing workspace.
 - ChatGPT OAuth connection, model selection and questions about selected text or a PDF page.
+- Shared navigation and theme across writing and reading; custom desktop title bar with window controls.
 - A new Folio SVG symbol, quieter interface and illustrated documentation.
 - 28 MCP tools, including project ZIP import.
 

@@ -20,12 +20,14 @@ else {
       origin=`http://127.0.0.1:${port}`;
       const { Accounts }=await import('./auth.mjs');
       accounts=new Accounts(app.getPath('userData'),safeStorage,url=>shell.openExternal(url));
-      const handlers={openWeb:()=>shell.openExternal(origin),status:()=>accounts.status(),login:id=>accounts.login(id),cancel:()=>accounts.cancel(),select:id=>accounts.select(id),logout:id=>accounts.logout(id),models:()=>accounts.models(),ask:args=>accounts.ask(args)};
+      const handlers={minimize:()=>window.minimize(),maximize:()=>{window.isMaximized()?window.unmaximize():window.maximize();return window.isMaximized();},close:()=>window.close(),windowState:()=>({maximized:window.isMaximized()}),openWeb:()=>shell.openExternal(origin),status:()=>accounts.status(),login:id=>accounts.login(id),cancel:()=>accounts.cancel(),select:id=>accounts.select(id),logout:id=>accounts.logout(id),models:()=>accounts.models(),ask:args=>accounts.ask(args)};
       for(const [name,handler] of Object.entries(handlers))ipcMain.handle(`folio:${name}`,(event,arg)=>{
         if(event.sender!==window?.webContents || event.senderFrame!==window.webContents.mainFrame || new URL(event.senderFrame.url).origin!==origin)throw new Error('Forbidden sender.');
         return handler(arg);
       });
-      window=new BrowserWindow({width:1440,height:960,minWidth:900,minHeight:640,title:'Folio',icon:path.join(root,'web/folio.png'),backgroundColor:'#111318',show:false,webPreferences:{preload:path.join(__dirname,'preload.cjs'),contextIsolation:true,nodeIntegration:false,sandbox:true}});
+      window=new BrowserWindow({width:1440,height:960,minWidth:900,minHeight:640,title:'Folio',frame:false,icon:path.join(root,'web/folio.png'),backgroundColor:'#202522',show:false,webPreferences:{preload:path.join(__dirname,'preload.cjs'),contextIsolation:true,nodeIntegration:false,sandbox:true}});
+      const sendWindowState=()=>window.webContents.send('folio:window-state',{maximized:window.isMaximized()});
+      window.on('maximize',sendWindowState);window.on('unmaximize',sendWindowState);
       window.removeMenu();
       window.webContents.session.setPermissionRequestHandler((_web,_permission,callback)=>callback(false));
       window.webContents.setWindowOpenHandler(({url})=>{if(new URL(url).protocol==='https:' || new URL(url).origin===origin)void shell.openExternal(url);return {action:'deny'};});

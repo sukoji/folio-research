@@ -9,7 +9,7 @@ export const accountBridge = window.folioDesktop || Object.fromEntries(['status'
   }catch(error){popup?.close();throw error;}
 }]));
 export function setupAssistant({getContext,toast}) {
-  const button=document.createElement('button');button.className='side-action';button.textContent='◎  ChatGPT · 원고 질문';document.querySelector('.sidebar-bottom').prepend(button);
+  const button=document.createElement('button');button.className='side-action writing-only';button.textContent='◎  ChatGPT · 원고 질문';document.querySelector('.sidebar-bottom').prepend(button);
   const dialog=document.createElement('dialog');dialog.className='assistant-dialog';
   dialog.innerHTML=`<header><h2>원고 질문</h2><button id="closeAssistant" aria-label="닫기">✕</button></header><p>선택 영역이 있으면 그 부분을, 없으면 현재 파일을 전송합니다. 답변은 원고에 자동 적용되지 않습니다.</p><section class="account-controls"><select id="aiAccount" aria-label="ChatGPT 계정"></select><button id="aiLogin">Continue with ChatGPT</button><button id="aiLogout">로그아웃</button><button id="aiCancel">로그인 취소</button></section><p id="aiStatus" role="status"></p><a href="https://chatgpt.com/settings/usage" target="_blank" rel="noreferrer">ChatGPT 사용량·앱 권한 관리</a><hr><label>모델 <select id="aiModel" aria-label="AI 모델"></select></label><button id="aiModels">모델 새로고침</button><label for="aiPrompt">질문</label><textarea id="aiPrompt" rows="4" placeholder="이 문단의 논리적 비약을 짚어 줘"></textarea><details><summary>전송할 원고 확인</summary><pre id="aiContext"></pre></details><button id="aiSend" class="primary">질문 보내기</button><pre id="aiAnswer" aria-live="polite"></pre><button id="aiCopy">답변 복사</button>`;
   document.body.append(dialog);const $=id=>dialog.querySelector('#'+id), bridge=accountBridge;let captured='',timer,busy=false,onNote=null,pageImage=null;
