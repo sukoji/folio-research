@@ -1,4 +1,6 @@
 import express from 'express';
+import { Accounts } from '../desktop/auth.mjs';
+import { importArchive, exportArchive } from './archive.mjs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { parseArgs } from 'node:util';
@@ -16,8 +18,8 @@ if (values.help) {
   console.log('Folio: node src/server.mjs [--stdio] [--data-dir PATH] [--port 4317]\nDefault: local browser UI and MCP HTTP endpoint. --stdio: agent-launched MCP process only. Both share the same data directory.');
   process.exit(0);
 }
-const port = Number(values.port || process.env.FOLIO_PORT || 4317);
-if (!Number.isInteger(port) || port < 1 || port > 65535) throw new Error('Invalid Folio port.');
+let port = Number(values.port || process.env.FOLIO_PORT || 4317);
+if (!Number.isInteger(port) || port < 0 || port > 65535) throw new Error('Invalid Folio port.');
 const store = new Store(values['data-dir'] || process.env.FOLIO_DATA_DIR || path.join(root, 'data'));
 const library = new Library(store);
 const compiler = new Compiler(store), discovery = new Discovery(store);
@@ -33,6 +35,8 @@ if (values.stdio) {
   process.on('SIGINT', async () => { await close(); process.exit(0); });
   process.on('SIGTERM', async () => { await close(); process.exit(0); });
 } else {
+  let authorizationUrl;
+  const accounts=new Accounts(store.dataDir,null,url=>{authorizationUrl=url;},{sessionOnly:true});
   const app = express();
   app.disable('x-powered-by');
   const hosts = new Set([`127.0.0.1:${port}`, `localhost:${port}`]);
@@ -48,6 +52,8 @@ if (values.stdio) {
     next();
   });
   app.use(express.json({ limit: '29mb' }));
+  app.get('/api/account/status',(_req,res)=>res.json({...accounts.status(),sessionOnly:true}));
+  for(const action of ['login','cancel','select','logout','models','ask']) app.post(`/api/account/${action}`,async(req,res)=>{try {authorizationUrl=undefined;const result=await accounts[action](req.body.argument);res.json({result:result??null,...(action==='login'?{authorization_url:authorizationUrl}:{})});}catch(error){throw new WorkspaceError('ACCOUNT_ERROR',error.message);}});
   app.get('/api/discover', async (req,res) => res.json(await discovery.search(req.query.q)));
   app.get('/api/reading-list',(req,res) => res.json({items:discovery.list()}));
   app.post('/api/reading-list',(req,res) => res.status(201).json(discovery.save(req.body)));
@@ -68,7 +74,9 @@ if (values.stdio) {
   app.post('/api/papers/:id/notes', (req, res) => res.status(201).json(library.addNote(req.params.id, req.body.page, req.body.quote || '', req.body.body, req.body.kind)));
   app.post('/api/papers/:id/requests', (req, res) => res.status(201).json(library.request(req.params.id, req.body.page, req.body.quote || '', req.body.question)));
   app.post('/api/papers/:id/cite', (req, res) => res.json(library.cite({ ...req.body, paper_id: req.params.id })));
-  app.get('/api/info', (req, res) => res.json({ name: 'Folio', version: '1.1.0', mcp_url: `http://127.0.0.1:${port}/mcp`, storage: 'local-sqlite', stdio: { command: process.execPath, args: [path.join(root, 'src/server.mjs'), '--stdio', '--data-dir', store.dataDir, '--port', String(port)] } }));
+  app.get('/api/info', (req, res) => res.json({ name: 'Folio', version: '1.2.0', mcp_url: `http://127.0.0.1:${port}/mcp`, storage: 'local-sqlite', stdio: { command: process.execPath, args: [path.join(root, 'src/server.mjs'), '--stdio', '--data-dir', store.dataDir, '--port', String(port)] } }));
+  app.post('/api/import', async (req,res) => { if(typeof req.body.zip_base64 !== 'string' || !/^[A-Za-z0-9+/]*={0,2}$/.test(req.body.zip_base64)) throw new WorkspaceError('INVALID_ZIP','ZIP 데이터가 잘못됐습니다.'); res.status(201).json(await importArchive(store, Buffer.from(req.body.zip_base64,'base64'), req.body.name)); });
+  app.get('/api/projects/:id/archive', (req,res,next) => { res.type('application/zip').attachment('folio-project.zip'); exportArchive(store,req.params.id).on('error',next).pipe(res); });
   app.get('/api/projects', (req, res) => res.json({ projects: store.list() }));
   app.post('/api/projects', (req, res) => res.status(201).json(store.create(req.body.name, req.body.files)));
   app.get('/api/projects/:id', (req, res) => res.json(store.get(req.params.id)));
@@ -94,9 +102,10 @@ if (values.stdio) {
     res.status(known ? error.status : (error.status || 500)).json({ code: known ? error.code : 'REQUEST_FAILED', message: known ? error.message : 'Request could not be completed.' });
   });
   const listener = app.listen(port, '127.0.0.1', () => {
+    port=listener.address().port; for(const host of [`127.0.0.1:${port}`,`localhost:${port}`]){hosts.add(host);origins.add(`http://${host}`);} process.send?.({port});
     console.error(`Folio editor: http://127.0.0.1:${port}\nMCP HTTP: http://127.0.0.1:${port}/mcp\nData: ${store.dataDir}`);
   });
   listener.on('error', error => { console.error(error.code === 'EADDRINUSE' ? `Port ${port} is in use. Open the running Folio app or choose --port.` : error.message); store.close(); process.exitCode = 1; });
-  const close = () => listener.close(async () => { clearInterval(ocrTimer); await library.close(); store.close(); process.exit(0); });
+  const close = () => { accounts.cancel(); return listener.close(async () => { clearInterval(ocrTimer); await library.close(); store.close(); process.exit(0); }); };
   process.on('SIGINT', close); process.on('SIGTERM', close);
 }

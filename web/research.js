@@ -2,14 +2,14 @@ import * as pdfjs from '/vendor/pdfjs/build/pdf.mjs';
 import { setupDiscovery } from './discovery.js';
 pdfjs.GlobalWorkerOptions.workerSrc = '/vendor/pdfjs/build/pdf.worker.mjs';
 
-export function setupResearch({ api, toast, cite }) {
+export function setupResearch({ api, toast, cite, ask }) {
   const root = document.createElement('section'); root.id = 'research'; root.hidden = true;
-  root.innerHTML = `<header class="research-header"><div class="research-brand">f<span>folio / library</span></div><div class="research-mode">READ → THINK → WRITE</div><button id="backToWriting">원고로 돌아가기 ↗</button></header>
+  root.innerHTML = `<header class="research-header"><div class="research-brand"><img src="./folio.svg" alt=""><span>folio / 논문 읽기</span></div><div class="research-mode">논문 · 메모 · 인용</div><button id="backToWriting">원고로 돌아가기 ↗</button></header>
     <div class="research-layout"><aside class="library-panel"><div class="research-heading"><h2>내 논문</h2><span id="paperCount">0</span></div><button id="uploadPdf" class="research-primary">＋ PDF 가져오기</button><input id="pdfInput" type="file" accept="application/pdf,.pdf" hidden><input id="librarySearch" placeholder="제목, 저자, 태그 검색" aria-label="라이브러리 검색"><div id="libraryList"></div><p class="research-tip">PDF와 메모는 이 컴퓨터에 저장됩니다.<br>최대 20 MiB · 300페이지</p></aside>
-    <main class="reader-panel"><div class="reader-title"><div><small>RESEARCH READER</small><h1 id="paperTitle">읽은 논문을, 내 원고의 근거로.</h1><p id="paperMeta">논문을 가져오면 페이지와 출처가 연결된 작업을 시작할 수 있습니다.</p></div><button id="editMetadata" disabled>서지 정보</button></div>
+    <main class="reader-panel"><div class="reader-title"><div><small>논문 원문</small><h1 id="paperTitle">논문을 선택하세요</h1><p id="paperMeta">논문을 가져오면 페이지와 출처가 연결된 작업을 시작할 수 있습니다.</p></div><button id="editMetadata" disabled>서지 정보</button></div>
     <div class="reader-controls"><button id="prevPage" aria-label="이전 페이지">←</button><input id="pageNumber" type="number" min="1" value="1" aria-label="PDF 페이지"><span id="pageTotal">/ 0</span><button id="nextPage" aria-label="다음 페이지">→</button><select id="readerMode" aria-label="읽기 모드"><option value="pdf">PDF 원문</option><option value="text">추출 텍스트 · 선택 및 인용</option></select><select id="readerZoom" aria-label="PDF 확대"><option value="1">맞춤</option><option value="1.3">130%</option><option value="1.6">160%</option></select></div>
     <div class="reader-search"><input id="paperSearch" placeholder="논문 안에서 검색하고 Enter" aria-label="논문 본문 검색"><div id="paperSearchResults"></div></div>
-    <div id="readerViewport"><div id="readerEmpty"><span>◧</span><h2>문장을 읽고, 생각을 남기세요.</h2><p>PDF에서 문장을 선택해 설명·번역을 요청하거나<br>페이지에 연결된 메모를 원고에 인용할 수 있습니다.</p></div><div id="pdfSurface" hidden></div><pre id="pageText" hidden></pre></div>
+    <div id="readerViewport"><div id="readerEmpty"><span>◧</span><h2>PDF를 가져와 시작하세요</h2><p>PDF에서 문장을 선택해 설명·번역을 요청하거나<br>페이지에 연결된 메모를 원고에 인용할 수 있습니다.</p></div><div id="pdfSurface" hidden></div><pre id="pageText" hidden></pre></div>
     <footer class="reader-footer"><span id="readerStatus">논문을 선택하세요</span><button id="citePage" disabled>이 페이지를 원고에 인용 ↗</button></footer></main>
     <aside class="research-notebook"><div class="research-heading"><h2>연구 노트</h2><span class="research-badge">MCP</span></div><p class="research-tip">선택한 문장과 페이지를 함께 보관합니다.</p><blockquote id="selectedQuote">페이지 전체를 대상으로 작업합니다.</blockquote><button id="clearQuote" class="quiet-button">선택 해제</button>
     <div class="research-quick"><button data-question="이 페이지의 핵심 주장, 방법, 한계를 한국어로 요약해 주세요. 근거 페이지를 표시해 주세요.">요약</button><button data-question="선택한 문장(선택이 없으면 이 페이지)을 한국어로 번역해 주세요. 원문과 번역을 구분해 주세요.">번역</button><button data-question="선택한 내용(선택이 없으면 이 페이지)을 논문 문맥에 맞춰 설명해 주세요. 근거와 추론을 구분해 주세요.">설명</button></div>
@@ -101,6 +101,8 @@ export function setupResearch({ api, toast, cite }) {
     await refreshPaper();
     toast(kind === 'notes' ? '페이지에 메모를 저장했습니다.' : '질문을 저장했습니다. 연결된 에이전트에게 대기 질문 처리를 요청하세요.');
   }
+  const direct=document.createElement('button');direct.textContent='ChatGPT로 질문';direct.className='research-primary';$('askAgent').after(direct);
+  direct.onclick=guard(async()=>{if(!paper)throw new Error('논문을 선택하세요.');const id=paper.id,p=page,q=quote;const source=await api(`/papers/${id}/pages/${p}`);await ask({context:`${paper.title} · p.${p}\n${q || source.text}`,prompt:$('researchInput').value || '이 페이지의 핵심 주장과 한계를 설명해 주세요.',image:$('pdfSurface').querySelector('canvas')?.toDataURL('image/png'),onNote:async body=>{await api(`/papers/${id}/notes`,{method:'POST',body:{page:p,quote:q,body,kind:'explanation'}});await refreshPaper();}});});
   $('backToWriting').onclick = () => { if (busy) return toast('현재 작업을 마친 뒤 원고로 돌아갈 수 있습니다.'); root.hidden = true; document.querySelector('.app-shell').inert = false; };
   $('uploadPdf').onclick = () => $('pdfInput').click();
   $('pdfInput').onchange = guard(async event => {
@@ -134,5 +136,5 @@ export function setupResearch({ api, toast, cite }) {
   $('cancelMetadata').onclick = () => $('metadataDialog').close();
   $('metadataForm').onsubmit = event => { event.preventDefault(); void guard(async () => { const metadata = Object.fromEntries(new FormData(event.target)); paper = await api(`/papers/${paper.id}`, { method: 'PUT', body: { expected_revision: metadataRevision, metadata } }); $('metadataDialog').close(); $('paperTitle').textContent = paper.title; $('paperMeta').textContent = [paper.authors,paper.year,paper.doi].filter(Boolean).join(' · '); await refreshList(); await showPage(); })(); };
   setInterval(async () => { if (root.hidden || !paper || busy || polling) return; polling = true; const id = paper.id; try { const remote = await api(`/papers/${id}`); if (paper?.id === id && !busy && JSON.stringify(remote) !== JSON.stringify(paper)) { const ocrChanged=JSON.stringify(remote.ocr)!==JSON.stringify(paper.ocr); paper = remote; entries(); if(ocrChanged&&!quote)await showPage(); } } catch {} finally { polling = false; } }, 2500);
-  return async () => { root.hidden = false; document.querySelector('.app-shell').inert = true; await refreshList(); };
+  return async (source) => { root.hidden = false; document.querySelector('.app-shell').inert = true; await refreshList(); if(source?.paperId){await openPaper(source.paperId);page=Math.max(1,Math.min(paper.page_count,source.page || 1));await showPage();} };
 }

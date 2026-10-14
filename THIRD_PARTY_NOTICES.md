@@ -29,3 +29,14 @@ installed `pdfjs-dist/LICENSE` file.
 Imported research papers belong to their respective authors and publishers.
 No user papers, database files, account credentials, or machine-specific MCP
 configuration files are distributed in this source repository.
+
+## Desktop and editor additions
+
+- Electron: MIT. Packaged distributions include Electron/Chromium notices.
+- Node.js runtime: license and bundled notices in LICENSES/Node.txt.
+- Tectonic: MIT, LICENSES/Tectonic.txt.
+- CodeMirror: MIT, LICENSES/CodeMirror.txt. The browser bundle is built from CodeMirror packages; their package licenses remain in node_modules.
+- jose: MIT, OAuth/OIDC token verification.
+- yauzl and yazl: MIT, bounded ZIP import and export.
+
+The Folio SVG, PNG and ICO marks are project artwork under the repository MIT license.

@@ -10,7 +10,8 @@ export class Compiler {
   constructor(store) {
     this.store = store; this.busy = false;
     const bundled = path.join(root, 'data/tools/tectonic', process.platform === 'win32' ? 'tectonic.exe' : 'tectonic');
-    this.command = process.env.FOLIO_TECTONIC_PATH || (existsSync(bundled) ? bundled : 'tectonic');
+    const runtime = path.join(root, 'runtime', process.platform === 'win32' ? 'tectonic.exe' : 'tectonic');
+    this.command = process.env.FOLIO_TECTONIC_PATH || (existsSync(runtime) ? runtime : existsSync(bundled) ? bundled : 'tectonic');
     store.db.exec('CREATE TABLE IF NOT EXISTS compilations (id TEXT PRIMARY KEY, project_id TEXT NOT NULL, revision INTEGER NOT NULL, filename TEXT NOT NULL, status TEXT NOT NULL, log TEXT NOT NULL, created_at TEXT NOT NULL)');
   }
   async compile(projectId, expectedRevision, filename = 'main.tex') {
@@ -27,6 +28,7 @@ export class Compiler {
       for (const [name, content] of Object.entries(project.files)) {
         fileName(name); const target = path.join(dir,name); mkdirSync(path.dirname(target),{recursive:true}); writeFileSync(target,content,'utf8');
       }
+      for (const asset of this.store.assets(projectId)) { const target = path.join(dir,asset.name); mkdirSync(path.dirname(target),{recursive:true}); writeFileSync(target,asset.content); }
       const result = await new Promise((resolve,reject) => {
         const child = spawn(this.command,['-X','compile','--untrusted','--keep-logs','--outdir',out,`./${filename}`],{cwd:dir,windowsHide:true,env:{...process.env,TECTONIC_UNTRUSTED_MODE:'1'},stdio:['ignore','pipe','pipe']});
         let log = '', timedOut = false;

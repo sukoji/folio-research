@@ -38,7 +38,7 @@ function projectId(id) {
 }
 
 export function fileName(name) {
-  if (typeof name !== 'string' || name.length > 180 || !/\.(tex|bib|md|txt|cls|sty|bst|csv)$/i.test(name)) {
+  if (typeof name !== 'string' || name.length > 180 || !/\.(tex|bib|md|txt|cls|sty|bst|csv|bbx|cbx|lbx|def|cfg|clo|bbl|tikz|pgf|dat)$/i.test(name)) {
     throw new WorkspaceError('INVALID_FILENAME', 'Use a .tex, .bib, .md, .txt, .cls, .sty, .bst or .csv filename.');
   }
   const parts = name.split('/');
@@ -77,7 +77,8 @@ export class Store {
     this.db = new DatabaseSync(path.join(this.dataDir, 'folio.sqlite'));
     this.db.exec(`PRAGMA busy_timeout=5000; PRAGMA journal_mode=WAL; PRAGMA synchronous=FULL;
       CREATE TABLE IF NOT EXISTS projects (id TEXT PRIMARY KEY, name TEXT NOT NULL, files TEXT NOT NULL, revision INTEGER NOT NULL, updated_at TEXT NOT NULL);
-      CREATE TABLE IF NOT EXISTS history (project_id TEXT NOT NULL, revision INTEGER NOT NULL, name TEXT NOT NULL, files TEXT NOT NULL, updated_at TEXT NOT NULL, PRIMARY KEY(project_id, revision));`);
+      CREATE TABLE IF NOT EXISTS history (project_id TEXT NOT NULL, revision INTEGER NOT NULL, name TEXT NOT NULL, files TEXT NOT NULL, updated_at TEXT NOT NULL, PRIMARY KEY(project_id, revision));
+      CREATE TABLE IF NOT EXISTS project_assets(project_id TEXT NOT NULL, name TEXT NOT NULL, content BLOB NOT NULL, PRIMARY KEY(project_id,name));`);
   }
 
   close() { this.db.close(); }
@@ -90,19 +91,22 @@ export class Store {
     projectId(id);
     const row = this.db.prepare('SELECT * FROM projects WHERE id = ?').get(id);
     if (!row) throw new WorkspaceError('NOT_FOUND', 'Project not found.', 404);
-    return { ...row, files: JSON.parse(row.files) };
+    return { ...row, files: JSON.parse(row.files), assets: this.db.prepare('SELECT name, length(content) AS bytes FROM project_assets WHERE project_id=?').all(id) };
   }
 
-  create(name, files = { 'main.tex': starter, 'references.bib': '' }) {
+  create(name, files = { 'main.tex': starter, 'references.bib': '' }, assets = []) {
     const item = { id: randomUUID(), name: projectName(name), files: validateFiles(files), revision: 1, updated_at: new Date().toISOString() };
     this.db.exec('BEGIN IMMEDIATE');
     try {
       this.db.prepare('INSERT INTO projects VALUES (?, ?, ?, ?, ?)').run(item.id, item.name, JSON.stringify(item.files), item.revision, item.updated_at);
+      for (const asset of assets) this.db.prepare('INSERT INTO project_assets VALUES(?,?,?)').run(item.id, asset.name, asset.bytes);
       this.snapshot(item);
       this.db.exec('COMMIT');
     } catch (error) { this.db.exec('ROLLBACK'); throw error; }
-    return item;
+    return this.get(item.id);
   }
+
+  assets(id) { this.get(id); return this.db.prepare('SELECT name, content FROM project_assets WHERE project_id=?').all(id); }
 
   snapshot(item) {
     this.db.prepare('INSERT INTO history VALUES (?, ?, ?, ?, ?)').run(item.id, item.revision, item.name, JSON.stringify(item.files), item.updated_at);
@@ -119,6 +123,8 @@ export class Store {
       modify(item);
       item.name = projectName(item.name);
       item.files = validateFiles(item.files);
+      const assetNames = new Set(item.assets.map(a => a.name.toLowerCase()));
+      if (Object.keys(item.files).some(n => assetNames.has(n.toLowerCase()))) throw new WorkspaceError('FILE_COLLISION','An asset already uses that filename.');
       item.revision++;
       item.updated_at = new Date().toISOString();
       this.db.prepare('UPDATE projects SET name=?, files=?, revision=?, updated_at=? WHERE id=?').run(item.name, JSON.stringify(item.files), item.revision, item.updated_at, id);
@@ -180,6 +186,7 @@ export class Store {
       mkdirSync(path.dirname(target), { recursive: true });
       writeFileSync(target, content, { encoding: 'utf8', flag: 'wx' });
     }
+    for (const asset of this.assets(id)) { const target = path.join(destination, asset.name); mkdirSync(path.dirname(target), { recursive: true }); writeFileSync(target, asset.content, {flag:'wx'}); }
     return { project_id: id, revision: item.revision, directory: destination, files: Object.keys(item.files) };
   }
 }

@@ -1,6 +1,6 @@
 {
   "name": "folio-agent-workspace",
-  "version": "1.1.0",
+  "version": "1.2.0",
   "private": true,
   "type": "module",
   "description": "A local research studio for reading papers, connecting evidence, and writing with AI agents",
@@ -14,22 +14,38 @@
     "configure": "node scripts/configure.mjs",
     "doctor": "node scripts/doctor.mjs",
     "setup:tex": "node scripts/setup-tex.mjs",
-    "check": "node scripts/check-source.mjs"
+    "check": "node scripts/check-source.mjs",
+    "build:editor": "esbuild web/editor-source.js --bundle --format=esm --outfile=web/editor.js",
+    "desktop": "electron .",
+    "build:desktop": "npm run build:editor && node scripts/build-desktop.mjs"
   },
   "dependencies": {
+    "@codemirror/legacy-modes": "6.5.5",
+    "@codemirror/theme-one-dark": "6.1.3",
     "@modelcontextprotocol/sdk": "1.32.1",
     "@napi-rs/canvas": "1.0.11",
     "@tesseract.js-data/eng": "1.0.0",
     "@tesseract.js-data/kor": "1.0.0",
+    "codemirror": "6.0.2",
     "express": "5.3.0",
+    "jose": "6.2.12",
     "mathjax": "3.2.2",
     "pdfjs-dist": "6.4.299",
     "tesseract.js": "7.0.0",
+    "yauzl": "3.4.0",
+    "yazl": "3.3.1",
     "zod": "4.6.7"
   },
   "license": "MIT",
   "repository": {
     "type": "git",
     "url": "https://github.com/sukoji/folio-research.git"
-  }
+  },
+  "devDependencies": {
+    "@electron/packager": "20.3.0",
+    "electron": "44.7.2",
+    "esbuild": "0.28.2"
+  },
+  "main": "desktop/main.cjs",
+  "author": "Folio contributors"
 }

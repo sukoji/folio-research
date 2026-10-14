@@ -11,3 +11,5 @@ codex-folio.toml
 *.zip
 coverage/
 .DS_Store
+
+build/

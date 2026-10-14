@@ -1,3 +1,5 @@
+import { setupAssistant } from './assistant.js';
+import { createEditor } from './editor.js';
 import { renderPreview, validate } from './preview.js';
 import { setupResearch } from './research.js';
 import { setupCompile } from './compile.js';
@@ -13,6 +15,7 @@ let saveTimer;
 let refreshing = false;
 let switching = false;
 let actionBusy = false;
+const codeEditor = createEditor($('editor'), () => void save());
 
 async function api(route, options = {}) {
   const response = await fetch(`/api${route}`, {
@@ -69,6 +72,8 @@ async function save() {
 }
 
 function updateMeta() {
+  const outline=document.getElementById('outlineList');if(outline){outline.replaceChildren();for(const match of $('editor').value.matchAll(/\\(?:sub)*section\*?\{([^}]+)\}/g)){const b=document.createElement('button');b.textContent=match[1];b.onclick=()=>{codeEditor.dispatch({selection:{anchor:match.index},scrollIntoView:true});codeEditor.focus();};outline.append(b);}}
+  const sources=document.getElementById('sourceLinks');if(sources){sources.replaceChildren();const seen=new Set();for(const m of $('editor').value.matchAll(/folio:\/\/papers\/([0-9a-f-]{36})\/pages\/(\d+)/g)){if(seen.has(m[0]))continue;seen.add(m[0]);const b=document.createElement('button');b.textContent=`인용 원문 · p.${m[2]}`;b.onclick=()=>safely(async()=>{if(await save())await openResearch({paperId:m[1],page:Number(m[2])});});sources.append(b);}}
   const editor = $('editor');
   const before = editor.value.slice(0, editor.selectionStart);
   $('cursorPosition').textContent = `Ln ${before.split('\n').length}, Col ${before.length - before.lastIndexOf('\n')}`;
@@ -92,6 +97,7 @@ function renderFiles() {
     more.onclick = () => safely(() => fileActions(name));
     row.append(open, more); list.append(row);
   }
+  for(const asset of active.assets || []) { const row=document.createElement('div');row.className='file-row asset-row';row.textContent='▧  '+asset.name;row.title=`${asset.bytes.toLocaleString()} bytes · 컴파일에 포함`;list.append(row); }
 }
 
 function renderEditor() {
@@ -210,6 +216,12 @@ $('importButton').onclick = () => $('importInput').click();
 $('importInput').onchange = event => safely(async () => {
   if (!(await save())) return;
   for (const file of event.target.files) {
+    if (/\.zip$/i.test(file.name)) {
+      if(file.size>20*1024*1024)throw new Error('ZIP은 20 MiB 이하여야 합니다.');
+      const bytes=new Uint8Array(await file.arrayBuffer()); let raw=''; for(let i=0;i<bytes.length;i+=32768)raw+=String.fromCharCode(...bytes.subarray(i,i+32768));
+      const result=await api('/import',{method:'POST',body:{name:file.name.replace(/\.zip$/i,''),zip_base64:btoa(raw)}});
+      await selectProject(result.project.id); if(result.skipped.length)await modal('가져오기 결과', '지원하지 않아 제외한 파일: '+result.skipped.join(', ')); continue;
+    }
     if (file.size > 2 * 1024 * 1024) throw new Error('가져올 파일은 2 MiB 이하여야 합니다.');
     const text = await file.text();
     if (file.name.endsWith('.json')) {
@@ -224,7 +236,7 @@ $('importInput').onchange = event => safely(async () => {
   }
   event.target.value = ''; renderEditor(); toast('가져오기를 마쳤습니다.');
 });
-$('exportProject').onclick = () => downloadProject();
+$('exportProject').onclick = () => safely(async()=>{if(await save()){const a=document.createElement('a');a.href=`/api/projects/${active.id}/archive`;a.download='folio-project.zip';a.click();}});
 $('downloadFile').onclick = () => download(currentFile.split('/').pop(), active.files[currentFile]);
 $('downloadDraft').onclick = () => downloadProject('-draft');
 $('loadRemote').onclick = () => safely(async () => {
@@ -281,7 +293,7 @@ async function initialize() {
   document.querySelector('.local-note').textContent = '● 로컬 DB 저장 · MCP 연결 가능';
   setInterval(refresh, 1500);
 }
-const openResearch = setupResearch({ api, toast, cite: async (paperId, page, noteId) => {
+const openResearch = setupResearch({ api, toast, ask:options=>openAssistant(options), cite: async (paperId, page, noteId) => {
   if (!(await save())) throw new Error('원고 저장 충돌을 먼저 해결하세요.');
   const filename = currentFile.endsWith('.tex') ? currentFile : Object.keys(active.files).find(name => name.endsWith('.tex'));
   if (!filename) throw new Error('프로젝트에 .tex 원고 파일이 필요합니다.');
@@ -295,5 +307,8 @@ const libraryButton = document.createElement('button'); libraryButton.className 
 const compileButton=document.createElement('button');compileButton.className='toolbar-button primary';compileButton.textContent='PDF 컴파일';compileButton.id='compilePdf';
 compileButton.onclick=setupCompile({api,save,getProject:()=>active,toast});$('printPdf').before(compileButton);$('printPdf').textContent='간이 인쇄';$('printPdf').classList.remove('primary');
 libraryButton.onclick = async () => { try { if (await save()) await openResearch(); } catch (error) { toast(error.message); } };
-document.querySelector('.sidebar-bottom').prepend(libraryButton);
+const modes=document.createElement('div');modes.className='workspace-switch';modes.innerHTML='<button class="active">원고 쓰기</button><button id="readMode">논문 읽기</button>';document.querySelector('.brand').after(modes);modes.querySelector('#readMode').onclick=libraryButton.onclick;
+const outline=document.createElement('details');outline.className='editor-outline';outline.open=true;outline.innerHTML='<summary>문서 목차</summary><div id="outlineList"></div><div id="sourceLinks"></div>';document.querySelector('.sidebar-bottom').before(outline);
+if(window.folioDesktop){const b=document.createElement('button');b.className='side-action';b.textContent='브라우저에서 같은 작업 공간 열기';b.onclick=()=>window.folioDesktop.openWeb();document.querySelector('.sidebar-bottom').append(b);}
+const openAssistant=setupAssistant({toast,getContext:()=>{const e=$('editor');return e.value.slice(e.selectionStart,e.selectionEnd)||e.value;}});
 initialize().catch(error => { status('연결 실패'); toast(error.message); });

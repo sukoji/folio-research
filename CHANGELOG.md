@@ -1,5 +1,17 @@
 # Release notes
 
+## 1.2.0
+
+- Windows portable Electron app with bundled Node and Tectonic; browser mode remains available.
+- LaTeX ZIP import and export, including nested sources, bibliography, images and fonts.
+- CodeMirror editor with syntax highlighting, completion, search, folding and document outline.
+- Source-linked reading notes and manuscript navigation in a shared reading/writing workspace.
+- ChatGPT OAuth connection, model selection and questions about selected text or a PDF page.
+- A new Folio SVG symbol, quieter interface and illustrated documentation.
+- 28 MCP tools, including project ZIP import.
+
+ChatGPT account consent and live inference require user login and have not been verified with a real account. Windows builds are unsigned portable apps.
+
 ## 1.1.0
 
 Folio brings reading, evidence, and writing into one local research studio.
