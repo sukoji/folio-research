@@ -6,8 +6,29 @@
 <p align="center"><sub>Windows x64 포터블 · 로컬 웹 앱 · MIT</sub></p>
 <p align="center"><a href="https://github.com/sukoji/folio-research/actions/workflows/ci.yml"><img src="https://github.com/sukoji/folio-research/actions/workflows/ci.yml/badge.svg" alt="Tests"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-53644A" alt="MIT license"></a></p>
 
-<img src="docs/images/editor.png" alt="Folio의 구문 강조 LaTeX 편집기와 원고 미리보기">
-<p align="center"><sub>실제 실행 화면 · LaTeX 편집기와 원고 미리보기</sub></p>
+<img src="docs/images/overview-ko.png" alt="논문 속 근거를 원고의 인용으로: PDF, 출처 메모, BibTeX 인용과 주요 기능">
+
+## 한눈에 보는 기능
+
+| 하고 싶은 일 | Folio에서 쓰는 기능 |
+| --- | --- |
+| 원문을 보며 원고 쓰기 | 원고·미리보기·연구노트 동시 표시. 참고 PDF를 접어도 메모 유지 |
+| 근거를 인용으로 옮기기 | 페이지에 연결된 메모 → 원고 인용·BibTeX → 원문으로 돌아가기 |
+| 기존 프로젝트 이어 쓰기 | Prism·Overleaf 소스 ZIP의 하위 폴더·그림·참고문헌 보존 |
+| 문헌 목록 정리하기 | RIS/BibTeX/CSL 가져오기, 인용 형식 생성, DOI 중복 검토 |
+| 내 에이전트와 편집하기 | Codex·Claude Code용 MCP 도구 38개, 수정 충돌 보호 |
+| 한글 투고 양식 다루기 | **실험적 HWPX 본문 편집**. HWP 바이너리·전체 쪽 배치는 미지원 |
+
+[읽기·인용 사용법](#읽기에서-인용까지) · [참고문헌·HWPX 지원 범위](docs/manuscripts.md) · [AI·MCP 연결](docs/connections.md)
+
+<details>
+<summary>v1.3.1 실제 화면 보기</summary>
+
+<img src="docs/images/workspace-v1.3.1.png" alt="예제 데이터로 확인한 실제 화면. 원고·미리보기·참고 PDF·연구 노트를 함께 표시합니다.">
+
+예제 데이터로 확인한 실제 화면. 원고·미리보기·참고 PDF·연구 노트를 함께 표시합니다.
+
+</details>
 
 논문을 읽으며 남긴 메모를 출처와 함께 원고에 옮깁니다. LaTeX 편집기, PDF 리더, 참고문헌, AI 연결을 한 작업 공간에서 사용합니다. 문서와 수정 기록은 내 컴퓨터에 저장됩니다.
 
@@ -71,9 +92,8 @@ Prism·Overleaf에서 **LaTeX 소스 ZIP**을 내보낸 뒤 Folio의 **가져오
 
 ## 읽기에서 인용까지
 
-<img src="docs/images/reader.png" alt="페이지 원문과 출처가 연결된 연구 노트">
 
-**논문 읽기**에서 PDF를 엽니다. 문장을 선택하고 요약·번역·설명을 요청하거나 메모를 남깁니다. 그림을 질문할 때는 현재 페이지 이미지도 보낼 수 있습니다. 확인한 메모는 **메모 + 인용을 원고에 추가**로 옮깁니다. 원고 목차 아래의 출처 링크에서 원문 페이지로 돌아갑니다.
+왼쪽 **내 논문**에서 PDF를 선택합니다. 원고와 미리보기는 유지되고, 오른쪽에 참고 PDF와 연구 노트가 표시됩니다. **원문 접기**는 PDF만 접으며 메모 초안은 남습니다. 문장을 선택하고 요약·번역·설명을 요청하거나 메모를 남깁니다. 그림을 질문할 때는 현재 페이지 이미지도 보낼 수 있습니다. 확인한 메모는 **메모 + 인용을 원고에 추가**로 옮깁니다. 원고 목차 아래의 출처 링크에서 원문 페이지로 돌아갑니다.
 
 | 작업 | 제공하는 기능 |
 | --- | --- |
@@ -135,7 +155,7 @@ npm run build:desktop # Portable app for the current platform
 
 ## 문서와 기여
 
-현재 소스에는 **로컬 참고문헌 관리**(RIS/BibTeX 가져오기·내보내기, CSL 인용 생성, DOI 중복 검토)와 **실험적 HWPX 본문 편집**이 추가되어 있습니다. v1.3.0부터 웹과 데스크톱에서 사용할 수 있습니다. HWP 바이너리 편집·한글의 쪽 배치 재현·Mendeley 클라우드 동기화는 지원하지 않습니다. [지원 범위](docs/manuscripts.md)
+**로컬 참고문헌 관리**(RIS/BibTeX 가져오기·내보내기, CSL 인용 생성, DOI 중복 검토)와 **실험적 HWPX 본문 편집**을 v1.3.0부터 웹과 데스크톱에서 사용할 수 있습니다. HWP 바이너리 편집·한글의 쪽 배치 재현·Mendeley 클라우드 동기화는 지원하지 않습니다. [지원 범위](docs/manuscripts.md)
 
 | 찾는 내용 | 문서 |
 | --- | --- |

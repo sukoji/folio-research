@@ -6,8 +6,29 @@
 <p align="center"><sub>Windows x64 ポータブル版 · ローカルWebアプリ · MIT</sub></p>
 <p align="center"><a href="https://github.com/sukoji/folio-research/actions/workflows/ci.yml"><img src="https://github.com/sukoji/folio-research/actions/workflows/ci.yml/badge.svg" alt="テスト"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-53644A" alt="MITライセンス"></a></p>
 
-<img src="docs/images/editor.png" alt="構文を色分けしたFolioのLaTeXエディターと原稿プレビュー">
-<p align="center"><sub>実際の画面 · LaTeXエディターと原稿プレビュー</sub></p>
+<img src="docs/images/overview-ja.png" alt="PDFのページから出典付きメモ、BibTeX引用へ進む流れとFolioの主な機能">
+
+## 主な機能をひと目で
+
+| やりたいこと | Folioの機能 |
+| --- | --- |
+| 原文を見ながら書く | 原稿・プレビュー・メモを同時表示。PDFを閉じてもメモを保持 |
+| 根拠を引用にする | ページ付きメモ → 原稿の引用・BibTeX → 原文へ戻る |
+| 既存の原稿を引き継ぐ | Prism/OverleafのソースZIP。サブフォルダー・図・参考文献を保持 |
+| 文献を整理する | RIS/BibTeX/CSLの読み込み、引用形式の生成、DOI重複確認 |
+| エージェントと編集する | Codex/Claude Code向けMCPツール38個とリビジョン競合の保護 |
+| HWPX書式を扱う | **実験的な本文編集**。バイナリHWP・完全なページレイアウト再現は未対応 |
+
+[読む・メモする・引用する](#読む--メモする--引用する) · [文献管理・HWPXの対応範囲](docs/manuscripts.md) · [AI・MCP接続](docs/connections.md)
+
+<details>
+<summary>v1.3.1の実際の画面を見る</summary>
+
+<img src="docs/images/workspace-v1.3.1.png" alt="サンプルデータを使った実際の画面。原稿・プレビュー・参考PDF・研究メモを同時に表示します。">
+
+サンプルデータを使った実際の画面。原稿・プレビュー・参考PDF・研究メモを同時に表示します。
+
+</details>
 
 論文を読みながら残したメモを、出典と一緒に原稿へ取り込めます。LaTeXエディター、PDFリーダー、参考文献管理、AIへの接続をひとつの作業スペースにまとめました。文書と変更履歴は自分のコンピューターに保存されます。
 
@@ -73,9 +94,8 @@ PrismやOverleafで **LaTeXソースのZIP** を書き出し、Folioの **가져
 
 ## 読む → メモする → 引用する
 
-<img src="docs/images/reader.png" alt="PDFの原文ページと、出典に紐づく研究メモ">
 
-**논문 읽기**（論文を読む）でPDFを開きます。文章を選んで要約・翻訳・説明を依頼したり、メモを残したりできます。図について質問する際には、表示中のページ画像も送信できます。内容を確認したメモは **메모 + 인용을 원고에 추가**（メモと引用を原稿に追加）で取り込みます。原稿の目次の下にある出典リンクから、元のページに戻れます。
+左側の **내 논문**（自分の論文）からPDFを選びます。原稿とプレビューを表示したまま、右側に参考PDFと研究メモが開きます。**원문 접기**（原文を折りたたむ）でPDFだけを閉じても、メモの下書きは残ります。文章を選んで要約・翻訳・説明を依頼したり、メモを残したりできます。図について質問する際には、表示中のページ画像も送信できます。内容を確認したメモは **메모 + 인용을 원고에 추가**（メモと引用を原稿に追加）で取り込みます。原稿の目次の下にある出典リンクから、元のページに戻れます。
 
 | 作業 | 機能 |
 | --- | --- |

@@ -6,8 +6,29 @@
 <p align="center"><sub>Windows x64 portable · Local web app · MIT</sub></p>
 <p align="center"><a href="https://github.com/sukoji/folio-research/actions/workflows/ci.yml"><img src="https://github.com/sukoji/folio-research/actions/workflows/ci.yml/badge.svg" alt="Tests"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-53644A" alt="MIT license"></a></p>
 
-<img src="docs/images/editor.png" alt="Folio's LaTeX editor with syntax highlighting and manuscript preview">
-<p align="center"><sub>Actual application · LaTeX editor and manuscript preview</sub></p>
+<img src="docs/images/overview-en.png" alt="From a PDF page to a source-linked note and a BibTeX citation, with key Folio features">
+
+## Features at a glance
+
+| What you want to do | What Folio provides |
+| --- | --- |
+| Write with the source in view | Manuscript, preview, and notes together; collapse the PDF without losing notes |
+| Turn evidence into a citation | Page-linked note → manuscript citation and BibTeX → back to the source |
+| Continue an existing project | Prism/Overleaf source ZIP with nested folders, figures, and bibliography |
+| Organize references | RIS/BibTeX/CSL import, citation formatting, and DOI duplicate review |
+| Edit with your agent | 38 MCP tools for Codex/Claude Code, with revision conflict protection |
+| Work with HWPX forms | **Experimental text editing**; binary HWP and full page-layout fidelity are unsupported |
+
+[Reading and citations](#read--annotate--cite) · [Reference and HWPX support](docs/manuscripts.md) · [AI and MCP setup](docs/connections.md)
+
+<details>
+<summary>See the actual v1.3.1 workspace</summary>
+
+<img src="docs/images/workspace-v1.3.1.png" alt="Actual application with example data. Manuscript, preview, source PDF, and notes remain visible together.">
+
+Actual application with example data. Manuscript, preview, source PDF, and notes remain visible together.
+
+</details>
 
 Bring reading notes into your manuscript with their sources attached. Folio combines a LaTeX editor, PDF reader, bibliography tools, and AI connections in one workspace. Documents and revision history stay on your computer.
 
@@ -73,9 +94,8 @@ Folio compiles with Tectonic. Overleaf compiler settings, comments, and collabor
 
 ## Read → annotate → cite
 
-<img src="docs/images/reader.png" alt="A PDF page alongside research notes linked to its source">
 
-Open a PDF in **논문 읽기** (Read papers). Select a passage to request a summary, translation, or explanation, or write a note. You can also send the current page image when asking about figures. After checking a note, use **메모 + 인용을 원고에 추가** (Add note and citation to manuscript). Source links below the manuscript outline take you back to the original page.
+Select a PDF under **내 논문** (My papers) in the left sidebar. The manuscript and preview stay visible while the PDF and notebook open alongside them. **원문 접기** (Collapse source) hides only the PDF and preserves your note draft. Select a passage to request a summary, translation, or explanation, or write a note. You can also send the current page image when asking about figures. After checking a note, use **메모 + 인용을 원고에 추가** (Add note and citation to manuscript). Source links below the manuscript outline take you back to the original page.
 
 | Task | Tools |
 | --- | --- |

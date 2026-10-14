@@ -51,3 +51,4 @@ The Folio SVG, PNG and ICO marks are project artwork under the repository MIT li
 ## Interface typography
 
 - Pretendard Variable 1.3.9: Copyright (c) 2021, Kil Hyung-jin. SIL Open Font License 1.1; see LICENSES/Pretendard-OFL.txt. Unmodified font bundled from https://github.com/orioncactus/pretendard/tree/v1.3.9.
+- README artwork uses Pretendard JP Variable 1.3.9 under the same SIL Open Font License, included in LICENSES/Pretendard-OFL.txt. The documentation font is stored in docs/fonts/.
