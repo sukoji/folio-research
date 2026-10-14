@@ -1,6 +1,6 @@
 # References and HWPX
 
-These features are available when running the current source. The v1.2.0 desktop download predates them.
+These features are included in v1.3.0 for both web and desktop.
 
 ## Reference library
 

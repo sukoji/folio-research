@@ -3,7 +3,7 @@ import { setupDiscovery } from './discovery.js';
 pdfjs.GlobalWorkerOptions.workerSrc = '/vendor/pdfjs/build/pdf.worker.mjs';
 
 export function setupResearch({ api, toast, cite, ask }) {
-  const root = document.createElement('section'); root.id = 'research'; root.hidden = true;
+  const root = document.createElement('section'); root.id = 'research';
   root.innerHTML = `<header class="research-header topbar"><button id="readerMenu" class="icon-button mobile-menu" aria-label="메뉴">☰</button><div class="breadcrumb"><span>라이브러리</span><span class="crumb-divider">/</span><strong>논문 읽기</strong></div><span class="research-mode">원문 · 메모 · 인용</span></header>
     <div class="research-layout"><aside class="library-panel"><div class="research-heading"><h2>내 논문</h2><span id="paperCount">0</span></div><button id="uploadPdf" class="research-primary">＋ PDF 가져오기</button><input id="pdfInput" type="file" accept="application/pdf,.pdf" hidden><input id="librarySearch" placeholder="제목, 저자, 태그 검색" aria-label="라이브러리 검색"><div id="libraryList"></div><p class="research-tip">PDF와 메모는 이 컴퓨터에 저장됩니다.<br>최대 20 MiB · 300페이지</p></aside>
     <main class="reader-panel"><div class="reader-title"><div><small>논문 원문</small><h1 id="paperTitle">논문을 선택하세요</h1><p id="paperMeta">논문을 가져오면 페이지와 출처가 연결된 작업을 시작할 수 있습니다.</p></div><button id="editMetadata" disabled>서지 정보</button></div>
@@ -13,15 +13,16 @@ export function setupResearch({ api, toast, cite, ask }) {
     <footer class="reader-footer"><span id="readerStatus">논문을 선택하세요</span><button id="citePage" disabled>이 페이지를 원고에 인용 ↗</button></footer></main>
     <aside class="research-notebook"><div class="research-heading"><h2>연구 노트</h2><span class="research-badge">MCP</span></div><p class="research-tip">선택한 문장과 페이지를 함께 보관합니다.</p><blockquote id="selectedQuote">페이지 전체를 대상으로 작업합니다.</blockquote><button id="clearQuote" class="quiet-button">선택 해제</button>
     <div class="research-quick"><button data-question="이 페이지의 핵심 주장, 방법, 한계를 한국어로 요약해 주세요. 근거 페이지를 표시해 주세요.">요약</button><button data-question="선택한 문장(선택이 없으면 이 페이지)을 한국어로 번역해 주세요. 원문과 번역을 구분해 주세요.">번역</button><button data-question="선택한 내용(선택이 없으면 이 페이지)을 논문 문맥에 맞춰 설명해 주세요. 근거와 추론을 구분해 주세요.">설명</button></div>
-    <textarea id="researchInput" placeholder="내 메모를 쓰거나, 연결된 에이전트에게 질문하세요." aria-label="연구 메모 또는 질문"></textarea><div class="research-compose"><button id="saveNote">메모 저장</button><button id="askAgent" class="research-primary">질문 저장</button></div><details class="agent-help"><summary>Codex · Claude로 답변 받기</summary><p>질문 저장 후 연결된 에이전트에게 아래 지시를 보내세요. 답변이 오면 자동으로 표시됩니다.</p><code id="agentPrompt">Folio의 folio_pending_requests를 읽고, 해당 논문의 원문 페이지를 확인한 뒤 folio_answer_request로 한국어 답변을 저장해 줘.</code><button id="copyAgentPrompt">지시 복사</button></details><div id="researchEntries"></div></aside></div>
+    <textarea id="researchInput" placeholder="내 메모를 쓰거나, 연결된 에이전트에게 질문하세요." aria-label="연구 메모 또는 질문"></textarea><div class="research-compose"><button id="saveNote" class="research-primary">메모 저장</button><button id="askAgent">에이전트에게 질문</button></div><details class="agent-help"><summary>Codex · Claude로 답변 받기</summary><p>질문 저장 후 연결된 에이전트에게 아래 지시를 보내세요. 답변이 오면 자동으로 표시됩니다.</p><code id="agentPrompt">Folio의 folio_pending_requests를 읽고, 해당 논문의 원문 페이지를 확인한 뒤 folio_answer_request로 한국어 답변을 저장해 줘.</code><button id="copyAgentPrompt">지시 복사</button></details><div id="researchEntries"></div></aside></div>
     <dialog id="metadataDialog"><form id="metadataForm"><h2>서지 정보</h2><p>자동 추출된 제목·저자를 확인하세요. DOI와 연도는 확인된 값만 입력합니다.</p><label>제목<input name="title" required maxlength="500"></label><label>저자 (BibTeX: and로 구분)<input name="authors" maxlength="1000"></label><div class="metadata-row"><label>연도<input name="year" pattern="[0-9]{4}" maxlength="4"></label><label>인용 키<input name="citekey" required pattern="[A-Za-z][A-Za-z0-9_:\\-]*" maxlength="80"></label></div><label>DOI<input name="doi" placeholder="10.xxxx/…" maxlength="200"></label><label>태그<input name="tags" placeholder="예: 읽는 중, 관련 연구, 중요" maxlength="500"></label><div class="modal-actions"><button type="button" id="cancelMetadata">취소</button><button class="research-primary">저장</button></div></form></dialog>`;
   document.querySelector('.main-grid').append(root);
   root.setAttribute('aria-label','원고 옆 참고 자료');
   const header=root.querySelector('.research-header');
-  header.innerHTML='<div class="source-heading"><strong>참고 자료</strong><span>원고와 함께 읽기</span></div><button id="showManuscriptPreview" type="button">원고 미리보기</button>';
-  const notebook=root.querySelector('.research-notebook'),dock=document.createElement('details');
-  dock.className='notebook-dock';
-  const dockTitle=document.createElement('summary');dockTitle.textContent='연구 노트 · 요약 · 번역 · 질문';dock.append(dockTitle,notebook);root.querySelector('.research-layout').append(dock);
+  header.innerHTML='<div class="source-heading"><strong>연구 노트</strong><span>출처를 보며 기록하기</span></div><button id="toggleSource" type="button" aria-expanded="true" hidden>원문 접기</button>';
+  const notebook=root.querySelector('.research-notebook');
+  const notebookTitle=notebook.querySelector('.research-heading');
+  notebookTitle.innerHTML='<h2>메모와 질문</h2><span id="noteContext">논문을 선택하세요</span>';
+  root.querySelector('.reader-panel').hidden=true;
   const libraryPanel=root.querySelector('.library-panel');
   document.querySelector('.sidebar-bottom').before(libraryPanel);
   const $ = id => root.querySelector(`#${id}`) || libraryPanel.querySelector(`#${id}`);
@@ -32,7 +33,7 @@ export function setupResearch({ api, toast, cite, ask }) {
   ocrButton.onclick=async()=>{if(!paper)return;try{await api(`/papers/${paper.id}/ocr`,{method:'POST',body:{}});toast('OCR을 다시 시작했습니다.');}catch(error){toast(error.message);}};
   const guard = fn => async (...args) => { if (busy) return; busy = true; try { await fn(...args); } catch (error) { toast(error.message); $('readerStatus').textContent = error.message; } finally { busy = false; } };
   function node(tag, content, cls) { const el = document.createElement(tag); el.textContent = content; if (cls) el.className = cls; return el; }
-  function setQuote(value) { quote = value; $('selectedQuote').textContent = value || '페이지 전체를 대상으로 작업합니다.'; if(value)dock.open=true; }
+  function setQuote(value) { quote = value; $('selectedQuote').textContent = value || '페이지 전체를 대상으로 작업합니다.';  }
   async function refreshList() {
     const { papers } = await api(`/papers?q=${encodeURIComponent($('librarySearch').value)}`);
     $('paperCount').textContent = papers.length; $('libraryList').replaceChildren();
@@ -45,8 +46,10 @@ export function setupResearch({ api, toast, cite, ask }) {
   }
   async function openPaper(id) {
     setReading(true);
+    root.querySelector('.reader-panel').hidden=false; $('toggleSource').hidden=false; $('toggleSource').textContent='원문 접기'; $('toggleSource').setAttribute('aria-expanded','true');
     version++; renderTask?.cancel(); if (task) await task.destroy(); pdf = null;
     paper = await api(`/papers/${id}`); page = 1; setQuote('');
+    notebook.querySelectorAll('button,textarea').forEach(control=>{control.disabled=false;});
     $('researchInput').value = localStorage.getItem(`folio-research-draft-${id}`) || '';
     $('paperTitle').textContent = paper.title; $('paperMeta').textContent = [paper.authors, paper.year, paper.doi].filter(Boolean).join(' · ') || '서지 정보에서 제목, 저자, DOI를 확인하세요.';
     $('editMetadata').disabled = false; $('citePage').disabled = false;
@@ -60,6 +63,7 @@ export function setupResearch({ api, toast, cite, ask }) {
     if (!paper) return;
     const current = ++version; renderTask?.cancel();
     if(!preserveQuote)setQuote(''); $('pageNumber').value = page;
+    $('noteContext').textContent = `${paper.citekey} · p.${page}`;
     $('prevPage').disabled = page <= 1; $('nextPage').disabled = page >= paper.page_count;
     const source = await api(`/papers/${paper.id}/pages/${page}`);
     if (current !== version) return;
@@ -110,14 +114,20 @@ export function setupResearch({ api, toast, cite, ask }) {
     await refreshPaper();
     toast(kind === 'notes' ? '페이지에 메모를 저장했습니다.' : '질문을 저장했습니다. 연결된 에이전트에게 대기 질문 처리를 요청하세요.');
   }
-  const direct=document.createElement('button');direct.textContent='ChatGPT로 질문';direct.className='research-primary';$('askAgent').after(direct);
+  const direct=document.createElement('button');direct.textContent='ChatGPT로 질문';direct.className='direct-question';$('askAgent').after(direct);
   direct.onclick=guard(async()=>{if(!paper)throw new Error('논문을 선택하세요.');const id=paper.id,p=page,q=quote;const source=await api(`/papers/${id}/pages/${p}`);await ask({context:`${paper.title} · p.${p}\n${q || source.text}`,prompt:$('researchInput').value || '이 페이지의 핵심 주장과 한계를 설명해 주세요.',image:$('pdfSurface').querySelector('canvas')?.toDataURL('image/png'),onNote:async body=>{await api(`/papers/${id}/notes`,{method:'POST',body:{page:p,quote:q,body,kind:'explanation'}});await refreshPaper();}});});
+  notebook.querySelectorAll('button,textarea').forEach(control=>{control.disabled=true;});
+  $('selectedQuote').textContent='왼쪽에서 PDF를 선택하면 원문을 보며 메모하고 질문할 수 있습니다.';
   function setReading(reading){
-    root.hidden=!reading;document.body.classList.toggle('source-open',reading);
-    document.querySelector('.preview-pane').setAttribute('aria-hidden',String(reading));
     document.getElementById('sidebar').classList.remove('open');
+    if(reading) root.scrollIntoView({block:'nearest'});
   }
-  $('showManuscriptPreview').onclick=()=>setReading(false);
+  $('toggleSource').onclick=()=>{
+    const reader=root.querySelector('.reader-panel');reader.hidden=!reader.hidden;
+    $('toggleSource').textContent=reader.hidden?'원문 펼치기':'원문 접기';
+    $('toggleSource').setAttribute('aria-expanded',String(!reader.hidden));
+    if(!reader.hidden)void showPage({preserveQuote:true}).catch(error=>toast(error.message));
+  };
   $('uploadPdf').onclick = () => $('pdfInput').click();
   $('pdfInput').onchange = guard(async event => {
     const file = event.target.files[0]; if (!file) return;

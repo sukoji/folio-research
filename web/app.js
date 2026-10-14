@@ -309,11 +309,9 @@ const openResearch = setupResearch({ api, toast, ask:options=>openAssistant(opti
     if(sameFile){const cursor=Math.min(position,$('editor').value.length);$('editor').setSelectionRange(cursor,cursor);codeEditor.scrollDOM.scrollTop=scroll;}
   } finally {panels.forEach(panel=>{panel.inert=false;});actionBusy=false; switching = false; generation++; }
 } });
-const libraryButton = document.createElement('button'); libraryButton.className = 'side-action'; libraryButton.textContent = '◧   논문 라이브러리 · 읽기'; libraryButton.id = 'openLibrary';
 const compileButton=document.createElement('button');compileButton.className='toolbar-button primary';compileButton.textContent='PDF 컴파일';compileButton.id='compilePdf';
 compileButton.onclick=setupCompile({api,save,getProject:()=>active,toast});$('printPdf').before(compileButton);$('printPdf').textContent='간이 인쇄';$('printPdf').classList.remove('primary');
-libraryButton.onclick = async () => { try { if (await save()) await openResearch(); } catch (error) { toast(error.message); } };
-const sourceButton=document.createElement('button');sourceButton.className='render-button';sourceButton.textContent='참고 자료 열기';sourceButton.onclick=libraryButton.onclick;document.querySelector('.preview-actions').prepend(sourceButton);
+
 const outline=document.createElement('details');outline.className='editor-outline';outline.innerHTML='<summary>문서 목차 · 인용 원문</summary><div id="outlineList"></div><div id="sourceLinks"></div>';document.querySelector('.library-panel').before(outline);
 if(window.folioDesktop){const b=document.createElement('button');b.className='side-action';b.textContent='브라우저에서 같은 작업 공간 열기';b.onclick=()=>window.folioDesktop.openWeb();document.querySelector('.sidebar-bottom').append(b);}
 const openAssistant=setupAssistant({toast,getContext:()=>{const e=$('editor');return e.value.slice(e.selectionStart,e.selectionEnd)||e.value;}});

@@ -137,7 +137,7 @@ Set `FOLIO_TEST_TEX=1` to include actual PDF compilation tests. Tests run on Win
 
 ## Documentation and contributing
 
-The current source adds a local reference library (RIS/BibTeX import and export, CSL citations, and DOI duplicate review) and experimental HWPX text editing. These features are not in the v1.2.0 desktop download. Binary HWP editing, Hangul page-layout fidelity, and Mendeley cloud synchronization are not supported.
+The current source adds a local reference library (RIS/BibTeX import and export, CSL citations, and DOI duplicate review) and experimental HWPX text editing. These features are included in the v1.3.0 web and desktop versions. Binary HWP editing, Hangul page-layout fidelity, and Mendeley cloud synchronization are not supported.
 
 | Looking for | Read |
 | --- | --- |

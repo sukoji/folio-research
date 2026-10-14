@@ -90,7 +90,7 @@ if (values.stdio) {
   app.post('/api/papers/:id/notes', (req, res) => res.status(201).json(library.addNote(req.params.id, req.body.page, req.body.quote || '', req.body.body, req.body.kind)));
   app.post('/api/papers/:id/requests', (req, res) => res.status(201).json(library.request(req.params.id, req.body.page, req.body.quote || '', req.body.question)));
   app.post('/api/papers/:id/cite', (req, res) => res.json(library.cite({ ...req.body, paper_id: req.params.id })));
-  app.get('/api/info', (req, res) => res.json({ name: 'Folio', version: '1.2.0', mcp_url: `http://127.0.0.1:${port}/mcp`, storage: 'local-sqlite', stdio: { command: process.execPath, args: [path.join(root, 'src/server.mjs'), '--stdio', '--data-dir', store.dataDir, '--port', String(port)] } }));
+  app.get('/api/info', (req, res) => res.json({ name: 'Folio', version: '1.3.0', mcp_url: `http://127.0.0.1:${port}/mcp`, storage: 'local-sqlite', stdio: { command: process.execPath, args: [path.join(root, 'src/server.mjs'), '--stdio', '--data-dir', store.dataDir, '--port', String(port)] } }));
   app.post('/api/import', async (req,res) => { if(typeof req.body.zip_base64 !== 'string' || !/^[A-Za-z0-9+/]*={0,2}$/.test(req.body.zip_base64)) throw new WorkspaceError('INVALID_ZIP','ZIP 데이터가 잘못됐습니다.'); res.status(201).json(await importArchive(store, Buffer.from(req.body.zip_base64,'base64'), req.body.name)); });
   app.get('/api/projects/:id/archive', (req,res,next) => { res.type('application/zip').attachment('folio-project.zip'); exportArchive(store,req.params.id).on('error',next).pipe(res); });
   app.get('/api/projects', (req, res) => res.json({ projects: store.list() }));

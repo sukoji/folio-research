@@ -135,7 +135,7 @@ npm run build:desktop # Portable app for the current platform
 
 ## 문서와 기여
 
-현재 소스에는 **로컬 참고문헌 관리**(RIS/BibTeX 가져오기·내보내기, CSL 인용 생성, DOI 중복 검토)와 **실험적 HWPX 본문 편집**이 추가되어 있습니다. v1.2.0 데스크톱 배포본에는 아직 포함되지 않았습니다. HWP 바이너리 편집·한글의 쪽 배치 재현·Mendeley 클라우드 동기화는 지원하지 않습니다. [지원 범위](docs/manuscripts.md)
+현재 소스에는 **로컬 참고문헌 관리**(RIS/BibTeX 가져오기·내보내기, CSL 인용 생성, DOI 중복 검토)와 **실험적 HWPX 본문 편집**이 추가되어 있습니다. v1.3.0부터 웹과 데스크톱에서 사용할 수 있습니다. HWP 바이너리 편집·한글의 쪽 배치 재현·Mendeley 클라우드 동기화는 지원하지 않습니다. [지원 범위](docs/manuscripts.md)
 
 | 찾는 내용 | 문서 |
 | --- | --- |

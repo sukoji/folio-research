@@ -1,14 +1,13 @@
 # Release notes
 
-## Unreleased
-
-- One writing surface: keep the manuscript editor visible while opening source PDFs and research notes beside it. Source/preview changes preserve the open PDF and note draft.
+## 1.3.0
 
 - Local reference records, collections, RIS/BibTeX/CSL import, RIS/BibTeX export, and APA/Vancouver/Harvard citations.
 - Same-DOI duplicate review and explicit, revision-checked merging with retained database history.
 - Experimental HWPX text-run editing, package export, original-file history, and stale-edit protection. Full Hangul layout and binary HWP are not supported.
 - Ten additional MCP tools for references and HWPX (38 total).
-- Source-only preview; these additions are not included in the v1.2.0 desktop archives.
+- Included in the Windows desktop package, with versioned build folders to preserve older installations.
+- Manuscript, preview, and research notes remain visible together. Reference PDF can be collapsed without losing notes or replacing the preview.
 
 ## 1.2.0
 
