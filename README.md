@@ -1,5 +1,6 @@
 <p align="center"><img src="web/folio.svg" width="72" height="72" alt="Folio"></p>
 <h1 align="center">Folio</h1>
+<p align="center"><strong>한국어</strong> · <a href="README.en.md" lang="en">English</a> · <a href="README.ja.md" lang="ja">日本語</a></p>
 <p align="center">A place for your papers, sources, and manuscript.</p>
 <p align="center"><a href="https://github.com/sukoji/folio-research/releases/latest">Download</a> · <a href="#start">Start</a> · <a href="docs/guide.md">Guide</a> · <a href="docs/connections.md">ChatGPT & MCP</a> · <a href="CHANGELOG.md">Changelog</a></p>
 <p align="center"><a href="https://github.com/sukoji/folio-research/actions/workflows/ci.yml"><img src="https://github.com/sukoji/folio-research/actions/workflows/ci.yml/badge.svg" alt="Tests"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-53644A" alt="MIT license"></a></p>
