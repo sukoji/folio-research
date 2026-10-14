@@ -1,17 +1,24 @@
 <p align="center"><img src="web/folio.svg" width="72" height="72" alt="Folio"></p>
 <h1 align="center">Folio</h1>
 <p align="center"><a href="README.md" lang="ko">한국어</a> · <a href="README.en.md" lang="en">English</a> · <strong>日本語</strong></p>
-<p align="center">論文、出典、原稿をひとつの作業スペースに。</p>
-<p align="center"><a href="https://github.com/sukoji/folio-research/releases/latest">ダウンロード</a> · <a href="#start">はじめる</a> · <a href="docs/guide.md">ガイド（韓国語）</a> · <a href="docs/connections.md">ChatGPT・MCP（韓国語）</a> · <a href="CHANGELOG.md">変更履歴（英語）</a></p>
+<p align="center"><strong>論文を読み、根拠を残し、LaTeXで原稿を書く。</strong></p>
+<p align="center"><a href="https://github.com/sukoji/folio-research/releases/latest/download/Folio-windows-x64.zip"><strong>Windows版をダウンロード</strong></a> · <a href="#start">ブラウザーで起動</a> · <a href="docs/guide.md">ガイド（韓国語）</a> · <a href="CHANGELOG.md">変更履歴</a></p>
+<p align="center"><sub>Windows x64 ポータブル版 · ローカルWebアプリ · MIT</sub></p>
 <p align="center"><a href="https://github.com/sukoji/folio-research/actions/workflows/ci.yml"><img src="https://github.com/sukoji/folio-research/actions/workflows/ci.yml/badge.svg" alt="テスト"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-53644A" alt="MITライセンス"></a></p>
 
 <img src="docs/images/editor.png" alt="構文を色分けしたFolioのLaTeXエディターと原稿プレビュー">
+<p align="center"><sub>実際の画面 · LaTeXエディターと原稿プレビュー</sub></p>
 
 論文を読みながら残したメモを、出典と一緒に原稿へ取り込めます。LaTeXエディター、PDFリーダー、参考文献管理、AIへの接続をひとつの作業スペースにまとめました。文書と変更履歴は自分のコンピューターに保存されます。
 
 現在、アプリの表示言語は韓国語です。このページはREADMEの日本語版です。操作するボタンがわかるよう、以下では韓国語のラベルも併記しています。
 
-## ブラウザーでも、デスクトップでも
+<a id="start"></a>
+
+## はじめる
+
+<details>
+<summary>ブラウザー版とデスクトップ版の違い</summary>
 
 | ブラウザー版 | デスクトップ版 |
 | --- | --- |
@@ -22,8 +29,7 @@
 
 デスクトップ版の **브라우저에서 같은 작업 공간 열기**（同じ作業スペースをブラウザーで開く）を押すと、両方の画面で同じデータを使えます。Folioはローカルで動作するアプリで、クラウド上のホスティングサービスではありません。
 
-<a id="start"></a>
-## はじめる
+</details>
 
 ### Windowsデスクトップ版
 
@@ -44,6 +50,15 @@ npm start
 ```
 
 [localhost:4317](http://127.0.0.1:4317)を開きます。Windowsでは `start.cmd` からも起動できます。ソースからデスクトップ版を起動する場合は、`node node_modules/electron/install.js` でElectronランタイムを取得してから `npm run desktop` を実行してください。
+
+## 最初の論文から原稿の完成まで
+
+| 手順 | 操作 | 得られるもの |
+| --- | --- | --- |
+| **01 · 取り込む** | Prism・OverleafのソースZIPを読み込むか、新しいプロジェクトを作成します。 | 編集可能な原稿、参考文献、添付ファイル |
+| **02 · 読んで記録する** | PDFを開き、必要なページにメモを残します。 | 原文のページに戻れる研究メモ |
+| **03 · 引用して書く** | 確認したメモを原稿に引用し、編集を進めます。 | 出典リンクとBibTeXを含む原稿 |
+| **04 · 書き出す** | PDFをコンパイルし、プロジェクトのZIPを保存します。 | 提出用PDFと、編集を続けられるソース |
 
 ## 既存の原稿を取り込む
 
@@ -86,6 +101,29 @@ PrismやOverleafで **LaTeXソースのZIP** を書き出し、Folioの **가져
 
 ChatGPT接続は公式のOAuthフローを使っています。認証コールバックと応答ストリームの処理テスト、およびログイン画面は確認済みです。実際のアカウントでの認可と推論の完了は、まだ検証していません。
 
+## よくある質問
+
+<details>
+<summary>AIのアカウントは必要ですか？</summary>
+
+原稿の編集、PDF閲覧、メモ、引用、OCR、コンパイルはAIへのログインなしで使えます。AIの回答が必要なときにChatGPTまたはMCPエージェントを接続してください。
+
+</details>
+
+<details>
+<summary>文書はどこに保存されますか？</summary>
+
+ソースから起動したWeb版はプロジェクト内の <code>data/</code>、Windows版は <code>%APPDATA%/folio-agent-workspace/workspace/</code> に保存します。バックアップする際はFolioと接続中のエージェントプロセスを終了し、データフォルダー全体をコピーしてください。プロジェクトのZIPには論文ライブラリーや変更履歴は含まれません。
+
+</details>
+
+<details>
+<summary>外部には何が送信されますか？</summary>
+
+ChatGPTへの質問では、選択した原稿や論文の文脈、質問に含めたページ画像をOpenAIへ送信します。文献検索の検索語はCrossrefに送信します。MCPエージェントのデータ処理は、そのツールの設定に従います。初期インストールとTeXパッケージの取得にもネットワークを使います。
+
+</details>
+
 ## 開発
 
 ```sh
@@ -96,5 +134,18 @@ npm run build:desktop # 現在のプラットフォーム向けポータブル�
 ```
 
 `FOLIO_TEST_TEX=1` を設定すると、実際のPDFコンパイルもテストします。テスト対象はWindowsとLinuxです。デスクトップ配布版の動作確認対象はWindows x64です。
+
+## ドキュメントと貢献
+
+| 知りたいこと | ドキュメント |
+| --- | --- |
+| 編集、閲覧、OCR、コンパイルの使い方 | [ガイド（韓国語）](docs/guide.md) |
+| ChatGPTログイン、MCP設定、保存場所 | [接続ガイド（韓国語）](docs/connections.md) |
+| バージョンごとの変更点 | [変更履歴（英語）](CHANGELOG.md) |
+| 同梱ライブラリーとランタイム | [ライセンス表記](THIRD_PARTY_NOTICES.md) |
+
+不具合は、アプリのバージョン、OS、再現手順を添えて [Issues](https://github.com/sukoji/folio-research/issues) に報告してください。原稿に関する問題には、公開できる小さな再現用サンプルを使ってください。ドキュメントや翻訳の修正もプルリクエストで受け付けています。READMEの内容を変更する際は、韓国語・英語・日本語版の内容を揃えてください。
+
+---
 
 Folio独自のコードは [MITライセンス](LICENSE) で公開しています。同梱ライブラリーとランタイムのライセンスは [Third-party notices](THIRD_PARTY_NOTICES.md) に記載しています。FolioのSVGシンボルはこのリポジトリのために制作したもので、同じライセンスで利用できます。
