@@ -10,7 +10,7 @@
   "scripts": {
     "start": "node src/server.mjs",
     "mcp": "node src/server.mjs --stdio",
-    "test": "node --test test/*.test.mjs",
+    "test": "node --test --test-concurrency=1 test/*.test.mjs",
     "configure": "node scripts/configure.mjs",
     "doctor": "node scripts/doctor.mjs",
     "setup:tex": "node scripts/setup-tex.mjs",
