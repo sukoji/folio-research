@@ -11,7 +11,9 @@ try {
   if (!target) throw new Error('Install Tectonic for your platform and set FOLIO_TECTONIC_PATH.');
   const root = path.resolve(path.dirname(fileURLToPath(import.meta.url)),'..');
   const directory = path.join(root,'data/tools/tectonic'); mkdirSync(directory,{recursive:true});
-  const metadata = await fetch(`https://api.github.com/repos/tectonic-typesetting/tectonic/releases/tags/tectonic%40${version}`,{headers:{'User-Agent':'FolioResearch'},signal:AbortSignal.timeout(30000)});
+  const headers={'User-Agent':'FolioResearch'};
+  if(process.env.GITHUB_TOKEN)headers.Authorization=`Bearer ${process.env.GITHUB_TOKEN}`;
+  const metadata = await fetch(`https://api.github.com/repos/tectonic-typesetting/tectonic/releases/tags/tectonic%40${version}`,{headers,redirect:'error',signal:AbortSignal.timeout(30000)});
   if (!metadata.ok) throw new Error(`GitHub release metadata: HTTP ${metadata.status}`);
   const asset = (await metadata.json()).assets.find(a => a.name === `tectonic-${version}-${target}`);
   if (!asset || !/^sha256:[0-9a-f]{64}$/.test(asset.digest || '')) throw new Error('Release asset or SHA-256 digest unavailable; install Tectonic manually.');

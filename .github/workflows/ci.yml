@@ -1,4 +1,6 @@
 name: CI
+permissions:
+  contents: read
 on:
   push:
   pull_request:
@@ -17,6 +19,8 @@ jobs:
       - run: npm ci
       - run: npm run check
       - run: npm run setup:tex
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       - run: npm test
         env:
           FOLIO_TEST_TEX: '1'
