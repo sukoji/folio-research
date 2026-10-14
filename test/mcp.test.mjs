@@ -44,7 +44,10 @@ test('real MCP stdio and HTTP clients share documents with the browser API', { t
   t.after(() => http.close());
   const tools = await stdio.listTools();
   assert.ok(tools.tools.some(tool => tool.name === 'folio_replace_text'));
-  assert.equal(tools.tools.length, 28);
+  assert.equal(tools.tools.length, 38);
+  const reference = unpack(await stdio.callTool({name:'folio_save_reference_record',arguments:{data:{title:'Protocol bibliography',type:'article-journal'}}}));
+  assert.equal((await (await fetch(`${base}/api/references`)).json()).items[0].id,reference.id);
+  assert.match(unpack(await http.callTool({name:'folio_format_references',arguments:{ids:[reference.id],style:'apa'}})).bibliography,/Protocol bibliography/);
   const created = unpack(await stdio.callTool({ name: 'folio_create_project', arguments: { name: 'Protocol test', files: { 'main.tex': '\\begin{document}\nOriginal\n\\end{document}' } } }));
   const browser = await (await fetch(`${base}/api/projects/${created.id}`)).json();
   assert.match(browser.files['main.tex'], /Original/);

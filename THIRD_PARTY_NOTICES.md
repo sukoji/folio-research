@@ -40,3 +40,10 @@ configuration files are distributed in this source repository.
 - yauzl and yazl: MIT, bounded ZIP import and export.
 
 The Folio SVG, PNG and ICO marks are project artwork under the repository MIT license.
+
+## Bibliography and HWPX
+
+- Citation.js core and BibTeX/RIS/CSL plugins: MIT. Packages include their licenses.
+- citeproc-js: CPAL-1.0 OR AGPL-3.0; Folio uses the CPAL option. Citation formatting is powered by citeproc-js, Copyright Frank Bennett. The processor and license are distributed in node_modules/citeproc. See https://github.com/Juris-M/citeproc-js.
+- CSL styles and locales bundled by Citation.js retain their upstream attribution and license notices inside the packages.
+- @xmldom/xmldom: MIT, XML parsing and serialization.

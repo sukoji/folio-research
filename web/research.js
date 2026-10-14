@@ -15,7 +15,13 @@ export function setupResearch({ api, toast, cite, ask }) {
     <div class="research-quick"><button data-question="이 페이지의 핵심 주장, 방법, 한계를 한국어로 요약해 주세요. 근거 페이지를 표시해 주세요.">요약</button><button data-question="선택한 문장(선택이 없으면 이 페이지)을 한국어로 번역해 주세요. 원문과 번역을 구분해 주세요.">번역</button><button data-question="선택한 내용(선택이 없으면 이 페이지)을 논문 문맥에 맞춰 설명해 주세요. 근거와 추론을 구분해 주세요.">설명</button></div>
     <textarea id="researchInput" placeholder="내 메모를 쓰거나, 연결된 에이전트에게 질문하세요." aria-label="연구 메모 또는 질문"></textarea><div class="research-compose"><button id="saveNote">메모 저장</button><button id="askAgent" class="research-primary">질문 저장</button></div><details class="agent-help"><summary>Codex · Claude로 답변 받기</summary><p>질문 저장 후 연결된 에이전트에게 아래 지시를 보내세요. 답변이 오면 자동으로 표시됩니다.</p><code id="agentPrompt">Folio의 folio_pending_requests를 읽고, 해당 논문의 원문 페이지를 확인한 뒤 folio_answer_request로 한국어 답변을 저장해 줘.</code><button id="copyAgentPrompt">지시 복사</button></details><div id="researchEntries"></div></aside></div>
     <dialog id="metadataDialog"><form id="metadataForm"><h2>서지 정보</h2><p>자동 추출된 제목·저자를 확인하세요. DOI와 연도는 확인된 값만 입력합니다.</p><label>제목<input name="title" required maxlength="500"></label><label>저자 (BibTeX: and로 구분)<input name="authors" maxlength="1000"></label><div class="metadata-row"><label>연도<input name="year" pattern="[0-9]{4}" maxlength="4"></label><label>인용 키<input name="citekey" required pattern="[A-Za-z][A-Za-z0-9_:\\-]*" maxlength="80"></label></div><label>DOI<input name="doi" placeholder="10.xxxx/…" maxlength="200"></label><label>태그<input name="tags" placeholder="예: 읽는 중, 관련 연구, 중요" maxlength="500"></label><div class="modal-actions"><button type="button" id="cancelMetadata">취소</button><button class="research-primary">저장</button></div></form></dialog>`;
-  document.querySelector('.workspace').append(root);
+  document.querySelector('.main-grid').append(root);
+  root.setAttribute('aria-label','원고 옆 참고 자료');
+  const header=root.querySelector('.research-header');
+  header.innerHTML='<div class="source-heading"><strong>참고 자료</strong><span>원고와 함께 읽기</span></div><button id="showManuscriptPreview" type="button">원고 미리보기</button>';
+  const notebook=root.querySelector('.research-notebook'),dock=document.createElement('details');
+  dock.className='notebook-dock';
+  const dockTitle=document.createElement('summary');dockTitle.textContent='연구 노트 · 요약 · 번역 · 질문';dock.append(dockTitle,notebook);root.querySelector('.research-layout').append(dock);
   const libraryPanel=root.querySelector('.library-panel');
   document.querySelector('.sidebar-bottom').before(libraryPanel);
   const $ = id => root.querySelector(`#${id}`) || libraryPanel.querySelector(`#${id}`);
@@ -26,7 +32,7 @@ export function setupResearch({ api, toast, cite, ask }) {
   ocrButton.onclick=async()=>{if(!paper)return;try{await api(`/papers/${paper.id}/ocr`,{method:'POST',body:{}});toast('OCR을 다시 시작했습니다.');}catch(error){toast(error.message);}};
   const guard = fn => async (...args) => { if (busy) return; busy = true; try { await fn(...args); } catch (error) { toast(error.message); $('readerStatus').textContent = error.message; } finally { busy = false; } };
   function node(tag, content, cls) { const el = document.createElement(tag); el.textContent = content; if (cls) el.className = cls; return el; }
-  function setQuote(value) { quote = value; $('selectedQuote').textContent = value || '페이지 전체를 대상으로 작업합니다.'; }
+  function setQuote(value) { quote = value; $('selectedQuote').textContent = value || '페이지 전체를 대상으로 작업합니다.'; if(value)dock.open=true; }
   async function refreshList() {
     const { papers } = await api(`/papers?q=${encodeURIComponent($('librarySearch').value)}`);
     $('paperCount').textContent = papers.length; $('libraryList').replaceChildren();
@@ -38,6 +44,7 @@ export function setupResearch({ api, toast, cite, ask }) {
     if (!papers.length) $('libraryList').append(node('p', '아직 논문이 없습니다. PDF를 가져와 시작하세요.', 'research-tip'));
   }
   async function openPaper(id) {
+    setReading(true);
     version++; renderTask?.cancel(); if (task) await task.destroy(); pdf = null;
     paper = await api(`/papers/${id}`); page = 1; setQuote('');
     $('researchInput').value = localStorage.getItem(`folio-research-draft-${id}`) || '';
@@ -49,10 +56,10 @@ export function setupResearch({ api, toast, cite, ask }) {
     task = pdfjs.getDocument({ url: `/api/papers/${id}/pdf`, isEvalSupported: false, cMapUrl: '/vendor/pdfjs/cmaps/', cMapPacked: true, standardFontDataUrl: '/vendor/pdfjs/standard_fonts/', wasmUrl: '/vendor/pdfjs/wasm/' });
     pdf = await task.promise; await showPage();
   }
-  async function showPage() {
+  async function showPage({preserveQuote=false} = {}) {
     if (!paper) return;
     const current = ++version; renderTask?.cancel();
-    setQuote(''); $('pageNumber').value = page;
+    if(!preserveQuote)setQuote(''); $('pageNumber').value = page;
     $('prevPage').disabled = page <= 1; $('nextPage').disabled = page >= paper.page_count;
     const source = await api(`/papers/${paper.id}/pages/${page}`);
     if (current !== version) return;
@@ -106,11 +113,11 @@ export function setupResearch({ api, toast, cite, ask }) {
   const direct=document.createElement('button');direct.textContent='ChatGPT로 질문';direct.className='research-primary';$('askAgent').after(direct);
   direct.onclick=guard(async()=>{if(!paper)throw new Error('논문을 선택하세요.');const id=paper.id,p=page,q=quote;const source=await api(`/papers/${id}/pages/${p}`);await ask({context:`${paper.title} · p.${p}\n${q || source.text}`,prompt:$('researchInput').value || '이 페이지의 핵심 주장과 한계를 설명해 주세요.',image:$('pdfSurface').querySelector('canvas')?.toDataURL('image/png'),onNote:async body=>{await api(`/papers/${id}/notes`,{method:'POST',body:{page:p,quote:q,body,kind:'explanation'}});await refreshPaper();}});});
   function setReading(reading){
-    root.hidden=!reading;document.body.classList.toggle('reading',reading);
-    for(const [id,active] of [['writeMode',!reading],['readMode',reading]]){const button=document.getElementById(id);button?.classList.toggle('active',active);button?.setAttribute('aria-pressed',String(active));}
+    root.hidden=!reading;document.body.classList.toggle('source-open',reading);
+    document.querySelector('.preview-pane').setAttribute('aria-hidden',String(reading));
     document.getElementById('sidebar').classList.remove('open');
   }
-  $('readerMenu').onclick=()=>document.getElementById('sidebar').classList.toggle('open');
+  $('showManuscriptPreview').onclick=()=>setReading(false);
   $('uploadPdf').onclick = () => $('pdfInput').click();
   $('pdfInput').onchange = guard(async event => {
     const file = event.target.files[0]; if (!file) return;
@@ -143,7 +150,8 @@ export function setupResearch({ api, toast, cite, ask }) {
   $('cancelMetadata').onclick = () => $('metadataDialog').close();
   $('metadataForm').onsubmit = event => { event.preventDefault(); void guard(async () => { const metadata = Object.fromEntries(new FormData(event.target)); paper = await api(`/papers/${paper.id}`, { method: 'PUT', body: { expected_revision: metadataRevision, metadata } }); $('metadataDialog').close(); $('paperTitle').textContent = paper.title; $('paperMeta').textContent = [paper.authors,paper.year,paper.doi].filter(Boolean).join(' · '); await refreshList(); await showPage(); })(); };
   setInterval(async () => { if (root.hidden || !paper || busy || polling) return; polling = true; const id = paper.id; try { const remote = await api(`/papers/${id}`); if (paper?.id === id && !busy && JSON.stringify(remote) !== JSON.stringify(paper)) { const ocrChanged=JSON.stringify(remote.ocr)!==JSON.stringify(paper.ocr); paper = remote; entries(); if(ocrChanged&&!quote)await showPage(); } } catch {} finally { polling = false; } }, 2500);
-  const open=async(source)=>{setReading(true);await refreshList();if(source?.paperId){await openPaper(source.paperId);page=Math.max(1,Math.min(paper.page_count,source.page || 1));await showPage();}};
-  open.close=()=>{if(busy)return toast('현재 작업을 마친 뒤 원고로 돌아갈 수 있습니다.');setReading(false);};
+  const open=async(source)=>{setReading(true);await refreshList();if(source?.paperId){await openPaper(source.paperId);page=Math.max(1,Math.min(paper.page_count,source.page || 1));await showPage();}else if(paper)await showPage({preserveQuote:true});};
+  open.close=()=>setReading(false);
+  void refreshList().catch(e=>toast(e.message));
   return open;
 }

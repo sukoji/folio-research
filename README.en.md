@@ -137,8 +137,11 @@ Set `FOLIO_TEST_TEX=1` to include actual PDF compilation tests. Tests run on Win
 
 ## Documentation and contributing
 
+The current source adds a local reference library (RIS/BibTeX import and export, CSL citations, and DOI duplicate review) and experimental HWPX text editing. These features are not in the v1.2.0 desktop download. Binary HWP editing, Hangul page-layout fidelity, and Mendeley cloud synchronization are not supported.
+
 | Looking for | Read |
 | --- | --- |
+| Local reference library and experimental HWPX editing | [Scope and usage](docs/manuscripts.md) |
 | Editing, reading, OCR, and compilation | [User guide (Korean)](docs/guide.md) |
 | ChatGPT login, MCP setup, and storage | [Connection guide (Korean)](docs/connections.md) |
 | Changes by version | [Changelog](CHANGELOG.md) |

@@ -2,6 +2,7 @@ import { setupAssistant } from './assistant.js';
 import { createEditor } from './editor.js';
 import { renderPreview, validate } from './preview.js';
 import { setupResearch } from './research.js';
+import { setupManuscripts } from './manuscripts.js';
 import { setupCompile } from './compile.js';
 
 const $ = id => document.getElementById(id);
@@ -294,21 +295,30 @@ async function initialize() {
   setInterval(refresh, 1500);
 }
 const openResearch = setupResearch({ api, toast, ask:options=>openAssistant(options), cite: async (paperId, page, noteId) => {
-  if (!(await save())) throw new Error('원고 저장 충돌을 먼저 해결하세요.');
-  const filename = currentFile.endsWith('.tex') ? currentFile : Object.keys(active.files).find(name => name.endsWith('.tex'));
-  if (!filename) throw new Error('프로젝트에 .tex 원고 파일이 필요합니다.');
-  switching = true; generation++;
+  if(actionBusy)throw new Error('현재 원고 작업을 마친 뒤 인용하세요.');
+  actionBusy=true;switching = true; generation++;
+  const panels=[document.querySelector('.sidebar'),document.querySelector('.editor-pane'),document.querySelector('.workspace>.topbar')];
+  panels.forEach(panel=>{panel.inert=true;});
   try {
+    if (!(await save())) throw new Error('원고 저장 충돌을 먼저 해결하세요.');
+    const filename = currentFile.endsWith('.tex') ? currentFile : Object.keys(active.files).find(name => name.endsWith('.tex'));
+    if (!filename) throw new Error('프로젝트에 .tex 원고 파일이 필요합니다.');
+    const position=$('editor').selectionStart,scroll=codeEditor.scrollDOM.scrollTop,sameFile=currentFile===filename;
     active = await api(`/papers/${paperId}/cite`, { method: 'POST', body: { project_id: active.id, expected_revision: active.revision, filename, page, note_id: noteId } });
     currentFile = filename; renderEditor(); status(`인용 저장됨 · r${active.revision}`);
-  } finally { switching = false; generation++; }
+    if(sameFile){const cursor=Math.min(position,$('editor').value.length);$('editor').setSelectionRange(cursor,cursor);codeEditor.scrollDOM.scrollTop=scroll;}
+  } finally {panels.forEach(panel=>{panel.inert=false;});actionBusy=false; switching = false; generation++; }
 } });
 const libraryButton = document.createElement('button'); libraryButton.className = 'side-action'; libraryButton.textContent = '◧   논문 라이브러리 · 읽기'; libraryButton.id = 'openLibrary';
 const compileButton=document.createElement('button');compileButton.className='toolbar-button primary';compileButton.textContent='PDF 컴파일';compileButton.id='compilePdf';
 compileButton.onclick=setupCompile({api,save,getProject:()=>active,toast});$('printPdf').before(compileButton);$('printPdf').textContent='간이 인쇄';$('printPdf').classList.remove('primary');
 libraryButton.onclick = async () => { try { if (await save()) await openResearch(); } catch (error) { toast(error.message); } };
-const modes=document.createElement('nav');modes.className='workspace-switch';modes.setAttribute('aria-label','작업 모드');modes.innerHTML='<button id="writeMode" class="active" aria-pressed="true">원고 쓰기</button><button id="readMode" aria-pressed="false">논문 읽기</button>';document.querySelector('.brand').after(modes);modes.querySelector('#readMode').onclick=libraryButton.onclick;modes.querySelector('#writeMode').onclick=()=>openResearch.close();
-const outline=document.createElement('details');outline.className='editor-outline';outline.open=true;outline.innerHTML='<summary>문서 목차</summary><div id="outlineList"></div><div id="sourceLinks"></div>';document.querySelector('.sidebar-bottom').before(outline);
+const sourceButton=document.createElement('button');sourceButton.className='render-button';sourceButton.textContent='참고 자료 열기';sourceButton.onclick=libraryButton.onclick;document.querySelector('.preview-actions').prepend(sourceButton);
+const outline=document.createElement('details');outline.className='editor-outline';outline.innerHTML='<summary>문서 목차 · 인용 원문</summary><div id="outlineList"></div><div id="sourceLinks"></div>';document.querySelector('.library-panel').before(outline);
 if(window.folioDesktop){const b=document.createElement('button');b.className='side-action';b.textContent='브라우저에서 같은 작업 공간 열기';b.onclick=()=>window.folioDesktop.openWeb();document.querySelector('.sidebar-bottom').append(b);}
 const openAssistant=setupAssistant({toast,getContext:()=>{const e=$('editor');return e.value.slice(e.selectionStart,e.selectionEnd)||e.value;}});
+setupManuscripts({api,toast});
+const workspaceTools=document.createElement('details');workspaceTools.className='workspace-tools';workspaceTools.innerHTML='<summary>연결 · 기록 · 내보내기</summary>';
+for(const id of ['connectionButton','historyButton','importButton','exportProject'])workspaceTools.append($(id));
+document.querySelector('.local-note').before(workspaceTools);
 initialize().catch(error => { status('연결 실패'); toast(error.message); });
