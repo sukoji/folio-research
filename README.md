@@ -1,64 +1,66 @@
 <p align="center"><img src="web/folio.svg" width="72" height="72" alt="Folio"></p>
 <h1 align="center">Folio</h1>
-<p align="center"><strong>한국어</strong> · <a href="README.en.md" lang="en">English</a> · <a href="README.ja.md" lang="ja">日本語</a></p>
-<p align="center"><strong>논문을 읽고, 근거를 남기고, LaTeX 원고를 씁니다.</strong></p>
-<p align="center"><a href="https://github.com/sukoji/folio-research/releases/latest/download/Folio-windows-x64.zip"><strong>Windows 앱 다운로드</strong></a> · <a href="#start">브라우저로 실행</a> · <a href="docs/guide.md">사용 가이드</a> · <a href="CHANGELOG.md">변경 기록</a></p>
-<p align="center"><sub>Windows x64 포터블 · 로컬 웹 앱 · MIT</sub></p>
+<p align="center"><a href="README.ko.md" lang="ko">한국어</a> · <strong>English</strong> · <a href="README.ja.md" lang="ja">日本語</a></p>
+<p align="center"><strong>Read papers. Keep the evidence. Write in LaTeX.</strong></p>
+<p align="center"><a href="https://github.com/sukoji/folio-research/releases/latest/download/Folio-windows-x64.zip"><strong>Download for Windows</strong></a> · <a href="#start">Run in your browser</a> · <a href="docs/guide.md">User guide (KO)</a> · <a href="CHANGELOG.md">Changelog</a></p>
+<p align="center"><sub>Windows x64 portable · Local web app · MIT</sub></p>
 <p align="center"><a href="https://github.com/sukoji/folio-research/actions/workflows/ci.yml"><img src="https://github.com/sukoji/folio-research/actions/workflows/ci.yml/badge.svg" alt="Tests"></a> <a href="LICENSE"><img src="https://img.shields.io/badge/license-MIT-53644A" alt="MIT license"></a></p>
 
-<img src="docs/images/overview-ko.png" alt="논문 속 근거를 원고의 인용으로: PDF, 출처 메모, BibTeX 인용과 주요 기능">
+<img src="docs/images/overview-en.png" alt="From a PDF page to a source-linked note and a BibTeX citation, with key Folio features">
 
-## 한눈에 보는 기능
+## Features at a glance
 
-| 하고 싶은 일 | Folio에서 쓰는 기능 |
+| What you want to do | What Folio provides |
 | --- | --- |
-| 원문을 보며 원고 쓰기 | 원고·미리보기·연구노트 동시 표시. 참고 PDF를 접어도 메모 유지 |
-| 근거를 인용으로 옮기기 | 페이지에 연결된 메모 → 원고 인용·BibTeX → 원문으로 돌아가기 |
-| 기존 프로젝트 이어 쓰기 | Prism·Overleaf 소스 ZIP의 하위 폴더·그림·참고문헌 보존 |
-| 문헌 목록 정리하기 | RIS/BibTeX/CSL 가져오기, 인용 형식 생성, DOI 중복 검토 |
-| 내 에이전트와 편집하기 | Codex·Claude Code용 MCP 도구 38개, 수정 충돌 보호 |
-| 한글 투고 양식 다루기 | **실험적 HWPX 본문 편집**. HWP 바이너리·전체 쪽 배치는 미지원 |
+| Write with the source in view | Manuscript, preview, and notes together; collapse the PDF without losing notes |
+| Turn evidence into a citation | Page-linked note → manuscript citation and BibTeX → back to the source |
+| Continue an existing project | Prism/Overleaf source ZIP with nested folders, figures, and bibliography |
+| Organize references | RIS/BibTeX/CSL import, citation formatting, and DOI duplicate review |
+| Edit with your agent | 38 MCP tools for Codex/Claude Code, with revision conflict protection |
+| Work with HWPX forms | **Experimental text editing**; binary HWP and full page-layout fidelity are unsupported |
 
-[읽기·인용 사용법](#읽기에서-인용까지) · [참고문헌·HWPX 지원 범위](docs/manuscripts.md) · [AI·MCP 연결](docs/connections.md)
+[Reading and citations](#read--annotate--cite) · [Reference and HWPX support](docs/manuscripts.md) · [AI and MCP setup](docs/connections.md)
 
 <details>
-<summary>v1.3.1 실제 화면 보기</summary>
+<summary>See the actual v1.3.1 workspace</summary>
 
-<img src="docs/images/workspace-v1.3.1.png" alt="예제 데이터로 확인한 실제 화면. 원고·미리보기·참고 PDF·연구 노트를 함께 표시합니다.">
+<img src="docs/images/workspace-v1.3.1.png" alt="Actual application with example data. Manuscript, preview, source PDF, and notes remain visible together.">
 
-예제 데이터로 확인한 실제 화면. 원고·미리보기·참고 PDF·연구 노트를 함께 표시합니다.
+Actual application with example data. Manuscript, preview, source PDF, and notes remain visible together.
 
 </details>
 
-논문을 읽으며 남긴 메모를 출처와 함께 원고에 옮깁니다. LaTeX 편집기, PDF 리더, 참고문헌, AI 연결을 한 작업 공간에서 사용합니다. 문서와 수정 기록은 내 컴퓨터에 저장됩니다.
+Bring reading notes into your manuscript with their sources attached. Folio combines a LaTeX editor, PDF reader, bibliography tools, and AI connections in one workspace. Documents and revision history stay on your computer.
+
+The interface currently uses Korean. This page translates the documentation; Korean button labels are included below to help you find the controls.
 
 <a id="start"></a>
 
-## 시작하기
+## Start
 
 <details>
-<summary>웹과 데스크톱의 차이</summary>
+<summary>Compare browser and desktop</summary>
 
-| 웹 | 데스크톱 |
+| Browser | Desktop |
 | --- | --- |
-| 로컬 서버를 시작하고 브라우저에서 사용 | Windows 앱을 열어 사용 |
-| Node.js 24 이상 필요 | Node와 Tectonic 포함 |
-| 로그인은 서버를 종료할 때 해제 | 로그인 토큰을 OS 암호화로 보관 |
-| ZIP 가져오기, 편집, 읽기, OCR, AI, MCP | 동일한 기능과 전용 앱 창 |
+| Start a local server and open it in your browser | Open the Windows app |
+| Requires Node.js 24 or later | Includes Node and Tectonic |
+| Login lasts until the server shuts down | Login tokens are stored with OS encryption |
+| ZIP import, editing, reading, OCR, AI, and MCP | The same tools in a dedicated app window |
 
-데스크톱의 **브라우저에서 같은 작업 공간 열기**를 누르면 두 화면이 같은 데이터를 사용합니다. 클라우드 호스팅 서비스는 아닙니다.
+In the desktop app, **브라우저에서 같은 작업 공간 열기** (Open this workspace in a browser) opens the same data in your browser. Folio is a local application, not a hosted cloud service.
 
 </details>
 
-### Windows 앱
+### Windows desktop
 
-1. [최신 릴리스](https://github.com/sukoji/folio-research/releases/latest)에서 **Folio-windows-x64.zip**을 받습니다.
-2. 폴더 전체를 압축 해제하고 **Folio.exe**를 실행합니다.
-3. 새 원고를 만들거나 기존 프로젝트 ZIP을 가져옵니다.
+1. Download **Folio-windows-x64.zip** from the [latest release](https://github.com/sukoji/folio-research/releases/latest).
+2. Extract the entire folder and run **Folio.exe**.
+3. Create a manuscript or import an existing project ZIP.
 
-현재 Windows 배포본은 코드 서명되지 않은 포터블 앱입니다. 첫 PDF 컴파일 때 TeX 패키지 다운로드가 필요할 수 있습니다.
+The Windows download is an unsigned portable app. The first PDF compilation may need to download TeX packages.
 
-### 브라우저 · 소스 실행
+### Web / source
 
 ```sh
 git clone https://github.com/sukoji/folio-research.git
@@ -68,81 +70,81 @@ npm run setup:tex
 npm start
 ```
 
-[localhost:4317](http://127.0.0.1:4317)에서 엽니다. Windows에서는 `start.cmd`로 시작할 수 있습니다. 소스에서 데스크톱을 실행하려면 `node node_modules/electron/install.js`로 Electron 런타임을 받은 뒤 `npm run desktop`을 사용합니다.
+Open [localhost:4317](http://127.0.0.1:4317). On Windows, you can also use `start.cmd`. To run the desktop app from source, download the Electron runtime with `node node_modules/electron/install.js`, then run `npm run desktop`.
 
-## 첫 원고 완성하기
+## From the first paper to a finished manuscript
 
-| 순서 | 할 일 | 남는 결과 |
+| Step | Action | Result |
 | --- | --- | --- |
-| **01 · 가져오기** | Prism·Overleaf의 소스 ZIP을 가져오거나 새 프로젝트를 만듭니다. | 편집 가능한 원고와 참고문헌·첨부 파일 |
-| **02 · 읽고 기록하기** | PDF를 열고 필요한 페이지에 메모를 남깁니다. | 원문 페이지로 돌아갈 수 있는 연구 노트 |
-| **03 · 인용하고 쓰기** | 확인한 메모를 원고에 인용하고 편집합니다. | 출처 링크와 BibTeX가 연결된 원고 |
-| **04 · 내보내기** | PDF를 컴파일하고 프로젝트 ZIP을 저장합니다. | 제출용 PDF와 계속 편집할 수 있는 소스 |
+| **01 · Import** | Bring a source ZIP from Prism or Overleaf, or create a project. | Editable source, bibliography, and attachments |
+| **02 · Read and note** | Open a PDF and take notes on the pages you need. | Research notes that link back to the original page |
+| **03 · Cite and write** | Add a checked note to your manuscript and keep editing. | A draft with source links and BibTeX entries |
+| **04 · Export** | Compile the PDF and save a project ZIP. | A PDF to submit and source to keep working on |
 
-## 기존 원고 가져오기
+## Bring your manuscript
 
-Prism·Overleaf에서 **LaTeX 소스 ZIP**을 내보낸 뒤 Folio의 **가져오기**에서 선택합니다.
+Export a **LaTeX source ZIP** from Prism or Overleaf, then select it through **가져오기** (Import) in Folio.
 
-- `.tex`, `.bib`, 스타일 파일, 그림과 글꼴을 함께 가져옵니다.
-- 하위 폴더를 보존합니다. ZIP 전체를 감싼 공통 폴더 하나는 제거합니다.
-- 기존 프로젝트를 덮어쓰지 않고 새 프로젝트를 만듭니다.
-- 지원하지 않는 파일은 목록으로 알려줍니다. 다시 내보낼 때도 ZIP을 사용합니다.
+- Import `.tex`, `.bib`, style files, figures, and fonts together.
+- Keep nested folders. A single outer folder wrapping the entire project is removed.
+- Create a new project without overwriting an existing one.
+- See a list of unsupported files that were skipped. Export the project as a ZIP when needed.
 
-컴파일러는 Tectonic입니다. Overleaf의 컴파일러 설정, 댓글, 공동 편집 기록은 이전되지 않습니다. 외부 프로그램이 필요한 문서와 일부 글꼴·패키지는 수정이 필요할 수 있습니다. [지원 형식과 제한](docs/guide.md#import-and-compile)
+Folio compiles with Tectonic. Overleaf compiler settings, comments, and collaboration history are not imported. Documents that depend on external programs, certain fonts, or particular packages may need changes. [Supported formats and limits (Korean)](docs/guide.md#import-and-compile)
 
-## 읽기에서 인용까지
+## Read → annotate → cite
 
 
-왼쪽 **내 논문**에서 PDF를 선택합니다. 원고와 미리보기는 유지되고, 오른쪽에 참고 PDF와 연구 노트가 표시됩니다. **원문 접기**는 PDF만 접으며 메모 초안은 남습니다. 문장을 선택하고 요약·번역·설명을 요청하거나 메모를 남깁니다. 그림을 질문할 때는 현재 페이지 이미지도 보낼 수 있습니다. 확인한 메모는 **메모 + 인용을 원고에 추가**로 옮깁니다. 원고 목차 아래의 출처 링크에서 원문 페이지로 돌아갑니다.
+Select a PDF under **내 논문** (My papers) in the left sidebar. The manuscript and preview stay visible while the PDF and notebook open alongside them. **원문 접기** (Collapse source) hides only the PDF and preserves your note draft. Select a passage to request a summary, translation, or explanation, or write a note. You can also send the current page image when asking about figures. After checking a note, use **메모 + 인용을 원고에 추가** (Add note and citation to manuscript). Source links below the manuscript outline take you back to the original page.
 
-| 작업 | 제공하는 기능 |
+| Task | Tools |
 | --- | --- |
-| 쓰기 | LaTeX 구문 강조, 검색·치환, 자동완성, 괄호 짝, 접기, 문서 목차 |
-| 읽기 | PDF 원문, 텍스트 선택, 본문 검색, 페이지 확대, 출처 메모 |
-| 스캔 | 텍스트 없는 페이지의 영어·한국어 로컬 OCR |
-| 찾기 | Crossref 검색, 제목 기반 관련 논문, 읽을 목록 |
-| 인용 | 페이지 인용, BibTeX 추가, 메모와 원문의 연결 |
-| 완성 | Tectonic PDF 컴파일, 오류 로그, ZIP 내보내기 |
-| 함께 편집 | Codex·Claude Code MCP, 수정 기록, 오래된 버전의 덮어쓰기 거절 |
+| Write | LaTeX syntax highlighting, search and replace, completion, bracket matching, folding, document outline |
+| Read | Original PDF, text selection, full-text search, zoom, source notes |
+| Scan | Local English and Korean OCR for pages without embedded text |
+| Find | Crossref search, title-based related papers, reading list |
+| Cite | Page citations, BibTeX entries, links between notes and sources |
+| Finish | Tectonic PDF compilation, error logs, ZIP export |
+| Edit with agents | Codex and Claude Code through MCP, revision history, rejection of stale writes |
 
-## AI 연결
+## Choose your AI connection
 
-**ChatGPT:** **ChatGPT · 원고 질문 → Continue with ChatGPT**를 누릅니다. 공식 로그인 화면에서 사용 권한을 승인한 뒤 모델 목록을 불러옵니다. 계정·모델에 따른 접근 권한과 사용량 제한이 적용됩니다. 답변은 먼저 확인한 뒤 복사하거나 연구 노트에 저장합니다.
+**ChatGPT:** Select **ChatGPT · 원고 질문 → Continue with ChatGPT**. Approve access on the official sign-in page, then load the model list with **모델 새로고침** (Refresh models). Account and model access restrictions and usage limits apply. Review answers before copying them or saving them as research notes.
 
-**Codex / Claude Code:** 기존 에이전트를 MCP로 연결해 문서를 읽고 수정하거나 논문 질문에 답하게 할 수 있습니다. 수정할 때는 현재 리비전을 함께 전달합니다. Folio는 충돌한 변경을 조용히 덮어쓰지 않습니다.
+**Codex / Claude Code:** Connect an existing agent through MCP to read and edit documents or answer questions about papers. Edits include the current revision number. Folio rejects conflicting changes instead of silently overwriting them.
 
-→ [로그인, MCP 설정, 저장 위치](docs/connections.md)
+→ [Login, MCP setup, and data locations (Korean)](docs/connections.md)
 
-## 현재 지원 범위
+## Boundaries
 
-빠른 미리보기는 LaTeX 일부 문법만 표시합니다. 제출할 PDF는 **PDF 컴파일**로 확인하세요. OCR은 원문 대조가 필요하며, 관련 논문 목록은 서지 검색 결과입니다. 실시간 다중 사용자 협업, 클라우드 동기화, PDF 레이아웃을 그대로 유지하는 번역은 현재 제공하지 않습니다.
+The quick preview supports only part of LaTeX. Use **PDF 컴파일** (Compile PDF) to check the PDF you intend to submit. Check OCR output against the original. Related papers are bibliographic search results. Real-time multi-user collaboration, cloud synchronization, and translation that preserves the original PDF layout are not currently available.
 
-ChatGPT 로그인·추론 코드는 공식 OAuth 흐름을 사용합니다. 인증 콜백·스트림 처리 테스트와 로그인 UI를 검증했으며, 실제 계정의 승인·추론 완료는 사용자가 로그인한 뒤 확인해야 합니다.
+The ChatGPT integration uses the official OAuth flow. Authentication callback and response-stream handling tests, along with the login UI, have been checked. Consent and inference with a real account have not yet been verified.
 
-## 자주 묻는 질문
+## Frequently asked questions
 
 <details>
-<summary>AI 계정 없이 사용할 수 있나요?</summary>
+<summary>Do I need an AI account?</summary>
 
-원고 편집, PDF 읽기, 메모, 인용, OCR, 컴파일은 AI 로그인 없이 사용할 수 있습니다. AI 답변을 받으려면 ChatGPT 또는 MCP 에이전트를 연결하세요.
+Editing, PDF reading, notes, citations, OCR, and compilation work without an AI login. Connect ChatGPT or an MCP agent when you want AI answers.
 
 </details>
 
 <details>
-<summary>내 문서는 어디에 저장되나요?</summary>
+<summary>Where are my documents stored?</summary>
 
-소스 웹 버전은 프로젝트의 <code>data/</code>, Windows 앱은 <code>%APPDATA%/folio-agent-workspace/workspace/</code>에 저장합니다. 백업할 때는 앱과 연결된 에이전트 프로세스를 종료한 뒤 데이터 폴더 전체를 복사하세요. 프로젝트 ZIP에는 논문 라이브러리와 수정 기록이 포함되지 않습니다.
+The source web version uses <code>data/</code> in the project folder. The Windows app uses <code>%APPDATA%/folio-agent-workspace/workspace/</code>. To back up, close Folio and connected agent processes, then copy the entire data folder. A project ZIP does not include your paper library or revision history.
 
 </details>
 
 <details>
-<summary>어떤 정보가 외부로 전송되나요?</summary>
+<summary>What leaves my computer?</summary>
 
-ChatGPT에 질문하면 선택한 원고나 논문 문맥, 질문에 포함된 페이지 이미지가 OpenAI로 전송됩니다. 문헌 검색어는 Crossref로 전송됩니다. 연결한 MCP 에이전트의 데이터 처리는 해당 도구의 설정을 따릅니다. 초기 설치와 TeX 패키지 다운로드에도 네트워크를 사용합니다.
+ChatGPT questions send the selected manuscript or paper context and any included page image to OpenAI. Literature search queries go to Crossref. Data handling by an MCP agent depends on that tool’s settings. Initial installation and TeX package downloads also use the network.
 
 </details>
 
-## 개발
+## Development
 
 ```sh
 npm run build:editor   # CodeMirror browser bundle
@@ -151,21 +153,22 @@ npm test              # Storage, import, OCR, MCP, OAuth and inference handling
 npm run build:desktop # Portable app for the current platform
 ```
 
-`FOLIO_TEST_TEX=1`을 설정하면 실제 PDF 컴파일 테스트도 실행합니다. Windows와 Linux에서 테스트하며, 데스크톱 배포 검증 대상은 Windows x64입니다.
+Set `FOLIO_TEST_TEX=1` to include actual PDF compilation tests. Tests run on Windows and Linux; desktop distribution has been verified on Windows x64.
 
-## 문서와 기여
+## Documentation and contributing
 
-**로컬 참고문헌 관리**(RIS/BibTeX 가져오기·내보내기, CSL 인용 생성, DOI 중복 검토)와 **실험적 HWPX 본문 편집**을 v1.3.0부터 웹과 데스크톱에서 사용할 수 있습니다. HWP 바이너리 편집·한글의 쪽 배치 재현·Mendeley 클라우드 동기화는 지원하지 않습니다. [지원 범위](docs/manuscripts.md)
+The current source adds a local reference library (RIS/BibTeX import and export, CSL citations, and DOI duplicate review) and experimental HWPX text editing. These features are included in the v1.3.0 web and desktop versions. Binary HWP editing, Hangul page-layout fidelity, and Mendeley cloud synchronization are not supported.
 
-| 찾는 내용 | 문서 |
+| Looking for | Read |
 | --- | --- |
-| 편집·읽기·OCR·컴파일 사용법 | [사용 가이드](docs/guide.md) |
-| ChatGPT 로그인, MCP 설정, 저장 위치 | [연결 가이드](docs/connections.md) |
-| 버전별 변경 사항 | [변경 기록](CHANGELOG.md) |
-| 포함된 라이브러리와 런타임 | [라이선스 고지](THIRD_PARTY_NOTICES.md) |
+| Local reference library and experimental HWPX editing | [Scope and usage](docs/manuscripts.md) |
+| Editing, reading, OCR, and compilation | [User guide (Korean)](docs/guide.md) |
+| ChatGPT login, MCP setup, and storage | [Connection guide (Korean)](docs/connections.md) |
+| Changes by version | [Changelog](CHANGELOG.md) |
+| Included libraries and runtimes | [Third-party notices](THIRD_PARTY_NOTICES.md) |
 
-버그는 [Issues](https://github.com/sukoji/folio-research/issues)에 버전, 운영체제, 재현 순서와 함께 남겨주세요. 원고 관련 문제는 공개 가능한 최소 예제로 재현해 주세요. 문서·번역 수정도 PR로 보낼 수 있습니다. README를 수정할 때는 한국어·영어·일본어판의 내용도 함께 맞춰주세요.
+Report bugs in [Issues](https://github.com/sukoji/folio-research/issues) with the app version, operating system, and steps to reproduce. For manuscript issues, use a small example you can share publicly. Documentation and translation fixes are welcome as pull requests. Keep the Korean, English, and Japanese README versions in sync when changing their content.
 
 ---
 
-자체 코드는 [MIT](LICENSE). 포함된 라이브러리와 런타임의 라이선스는 [Third-party notices](THIRD_PARTY_NOTICES.md)에 정리했습니다. Folio SVG 심볼은 이 저장소에서 제작했으며 같은 라이선스로 제공합니다.
+Folio's own code is licensed under [MIT](LICENSE). See [Third-party notices](THIRD_PARTY_NOTICES.md) for the included libraries and runtimes. The Folio SVG symbol was created for this repository and is available under the same license.

@@ -1,6 +1,6 @@
 <p align="center"><img src="web/folio.svg" width="72" height="72" alt="Folio"></p>
 <h1 align="center">Folio</h1>
-<p align="center"><a href="README.md" lang="ko">한국어</a> · <a href="README.en.md" lang="en">English</a> · <strong>日本語</strong></p>
+<p align="center"><a href="README.ko.md" lang="ko">한국어</a> · <a href="README.md" lang="en">English</a> · <strong>日本語</strong></p>
 <p align="center"><strong>論文を読み、根拠を残し、LaTeXで原稿を書く。</strong></p>
 <p align="center"><a href="https://github.com/sukoji/folio-research/releases/latest/download/Folio-windows-x64.zip"><strong>Windows版をダウンロード</strong></a> · <a href="#start">ブラウザーで起動</a> · <a href="docs/guide.md">ガイド（韓国語）</a> · <a href="CHANGELOG.md">変更履歴</a></p>
 <p align="center"><sub>Windows x64 ポータブル版 · ローカルWebアプリ · MIT</sub></p>

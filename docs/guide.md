@@ -2,7 +2,7 @@
 
 ### 사용 가이드
 
-웹·데스크톱 시작 방법과 ChatGPT 연결은 [README](../README.md)와 [Connections](connections.md)를 참고하세요.
+웹·데스크톱 시작 방법과 ChatGPT 연결은 [README](../README.ko.md)와 [Connections](connections.md)를 참고하세요.
 
 **PDF library · Local OCR · Literature discovery · Research notes · LaTeX → PDF · MCP**
 
