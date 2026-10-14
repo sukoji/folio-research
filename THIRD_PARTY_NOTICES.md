@@ -47,3 +47,7 @@ The Folio SVG, PNG and ICO marks are project artwork under the repository MIT li
 - citeproc-js: CPAL-1.0 OR AGPL-3.0; Folio uses the CPAL option. Citation formatting is powered by citeproc-js, Copyright Frank Bennett. The processor and license are distributed in node_modules/citeproc. See https://github.com/Juris-M/citeproc-js.
 - CSL styles and locales bundled by Citation.js retain their upstream attribution and license notices inside the packages.
 - @xmldom/xmldom: MIT, XML parsing and serialization.
+
+## Interface typography
+
+- Pretendard Variable 1.3.9: Copyright (c) 2021, Kil Hyung-jin. SIL Open Font License 1.1; see LICENSES/Pretendard-OFL.txt. Unmodified font bundled from https://github.com/orioncactus/pretendard/tree/v1.3.9.

@@ -1,5 +1,10 @@
 # Release notes
 
+## 1.3.1
+
+- Bundle Pretendard Variable for consistent offline Korean and Latin interface typography.
+- Normalize control sizes, label spacing, notebook text, and code font fallbacks.
+
 ## 1.3.0
 
 - Local reference records, collections, RIS/BibTeX/CSL import, RIS/BibTeX export, and APA/Vancouver/Harvard citations.

@@ -1,6 +1,6 @@
 {
   "name": "folio-agent-workspace",
-  "version": "1.3.0",
+  "version": "1.3.1",
   "private": true,
   "type": "module",
   "description": "A local research studio for reading papers, connecting evidence, and writing with AI agents",

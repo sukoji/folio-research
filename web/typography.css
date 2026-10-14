@@ -1,0 +1,40 @@
+@font-face {
+  font-family: 'Pretendard';
+  src: url('./fonts/PretendardVariable.woff2') format('woff2');
+  font-style: normal;
+  font-weight: 100 900;
+  font-display: swap;
+}
+:root {
+  --font-ui: 'Pretendard', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  --font-code: 'Cascadia Code', Consolas, 'Pretendard', monospace;
+  font-family: var(--font-ui);
+  font-size: 14px;
+  line-height: 1.5;
+  letter-spacing: 0;
+}
+body, #research, #discoveryDialog, #compileDialog, .reader-title h1 { font-family: var(--font-ui); }
+button, input, select, textarea, #research :is(button,input,select,textarea) { font-family: var(--font-ui); letter-spacing: 0; }
+.brand { font-family: var(--font-ui); font-size: 24px; font-weight: 650; letter-spacing: -.6px; }
+.eyebrow, .file-header, .pane-options, .editor-footer, .window-title, .editor-outline summary {
+  font-family: var(--font-ui); font-size: 12px; letter-spacing: 0;
+}
+.sidebar-tabs button, .file-open, select.project-name, .side-action, .toolbar-button, .render-button,
+.library-panel :is(button,input), .library-panel .library-card strong, .workspace-tools>summary,
+.editor-outline button, .breadcrumb, .tab, .helper-actions button { font-size: 13px; }
+.sidebar :is(.research-heading h2,.file-header), .source-heading strong, .preview-title strong { font-size: 13px; font-weight: 600; }
+.sidebar .library-card span, .local-note, #saveStatus, .preview-foot, .window-title span { font-size: 12px; }
+.main-grid #research .reader-title h1 { font-size: 14px; font-weight: 600; letter-spacing: 0; }
+.main-grid #research .reader-title p, .source-heading span, .research-notebook #noteContext,
+.main-grid #research .reader-footer, #research .entry-head small, #research .quiet-button { font-size: 12px; }
+#research #researchInput, #research #selectedQuote, #research .research-entry p,
+#research .research-entry strong, #research .research-compose button, #research .research-quick button { font-size: 13px; line-height: 1.6; }
+#research .research-entry>button, #research .entry-head button { font-size: 12px!important; }
+.main-grid #pageText, .hwpx-content textarea { font-family: var(--font-ui); font-size: 15px; line-height: 1.8; }
+#codeEditor .cm-scroller, .editor-wrap textarea, .line-numbers { font-family: var(--font-code); font-size: 14px; line-height: 1.65; }
+#codeEditor .cm-gutters { font-family: var(--font-code); font-size: 12px; }
+.paper { font-family: 'Times New Roman', 'Noto Serif KR', serif; }
+.paper h1 { font-size: 22px; font-weight: 600; }
+.paper h2 { font-size: 18px; font-weight: 600; }
+.reference-editor label, .hwpx-content label, .manuscript-notice { font-size: 13px; }
+@media(max-width:1199px) { .toolbar-button { font-size: 12px; } }
